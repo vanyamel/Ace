@@ -1,3 +1,4 @@
-out/
-.idea/
-*.iml
+/shelf/
+/.idea/workspace.xml
+/.idea
+/out
