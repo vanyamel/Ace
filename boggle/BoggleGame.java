@@ -16,6 +16,8 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
+    private timeRush timeRush;
+
     /**
      * dice used to randomize letter assignments for a small grid
      */ 
@@ -121,6 +123,8 @@ public class BoggleGame {
         }
 
         //we are done with the game! So, summarize all the play that has transpired and exit.
+        System.out.println("you spent " + this.timeRush.getTimeInSeconds() + " minutes completing this game");
+        this.timeRush.scoreMultiplier(this.timeRush.getTimeInSeconds());
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
     }
