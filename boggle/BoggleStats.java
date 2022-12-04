@@ -108,8 +108,6 @@ public class BoggleStats {
     public void setPlayerScore(int score) {
         this.pScore = score;
     }
-
-    /*
      * End a given round.
      * This will clear out the human and computer word lists, so we can begin again.
      * The function will also update each player's total scores, average scores, and

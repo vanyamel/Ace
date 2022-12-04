@@ -1,5 +1,9 @@
 package boggle;
 
+import boggle.surprise.BadBetException;
+import boggle.surprise.BetMode;
+import boggle.surprise.Bets;
+
 import java.util.*;
 
 /**
@@ -265,6 +269,63 @@ public class BoggleGame {
 
     }
 
+    private void handleBet(Scanner scanner, BetMode mode) {
+        System.out.println("Current points: " + gameStats.getPlayerScore());
+
+        switch(mode) {
+            case MULTIPLIER:
+                System.out.println("Multiplier mode selected. Enter the amount of points you wish to bet: ");
+                int num = scanner.nextInt();
+                scanner.nextLine(); // skip one \n after the number
+
+                if (num < 0) {
+                    System.out.println("Good try! Cheating the system is not allowed. Deducting 10 points...");
+                    // make sure we don't take so many points that the player ends up in the negatives,
+                    // that would just be cruel
+                    gameStats.setPlayerScore(Math.max(0, gameStats.getPlayerScore() - 10));
+                } else if (num > gameStats.getPlayerScore()) {
+                    System.out.println("You don't have that many points. Returning...");
+                } else {
+                    try {
+                        int newPoints = Bets.multiplier(num);
+                        gameStats.setPlayerScore(gameStats.getPlayerScore() - num + newPoints);
+                        System.out.println("You now have: " + gameStats.getPlayerScore() + " points!");
+                    } catch(BadBetException e) {
+                        System.out.println("Bad bet! Returning...");
+                        System.err.println(e.getMessage());
+                    }
+                }
+                break;
+            case CHANCE:
+                if (gameStats.getPlayerScore() < 10) {
+                    System.out.println("You don't have 10 points yet, you cannot bet on the chance mode!");
+                    return;
+                }
+
+                System.out.println("Chance mode selected. Enter the chance you wish to have (from 0 to 1): ");
+                double chance = scanner.nextDouble();
+                scanner.nextLine(); // skip one \n after the number
+
+                try {
+                    boolean result = Bets.chance(chance);
+                    if (result) {
+                        System.out.println("You won! adding " + (int)(10 * chance) + " to your points...");
+                        gameStats.setPlayerScore(gameStats.getPlayerScore() + (int)(10 * chance));
+                    } else {
+                        System.out.println("You lost 10 points!");
+                        gameStats.setPlayerScore(Math.max(0, gameStats.getPlayerScore() - 10));
+                    }
+                } catch(BadBetException e) {
+                    System.out.println("Bad bet! Returning...");
+                    System.err.println(e.getMessage());
+                }
+                break;
+            default:
+                System.err.println("Invalid bet mode in BoggleGame::handleBet");
+                break;
+        }
+    }
+
     /* 
      * Gets words from the user.  As words are input, check to see that they are valid.
      * If yes, add the word to the player's word list (in boggleStats) and increment
@@ -275,7 +336,7 @@ public class BoggleGame {
      * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
      */
     private void humanMove(BoggleGrid board, Map<String,ArrayList<Position>> allWords){
-        System.out.println("It's your turn to find some words!");
+        System.out.println("It's your turn to find some words! (or type \"B\" without the quotes to switch to betting mode)");
         while(true) {
             //You write code here!
             //step 1. Print the board for the user, so they can scan it for words
@@ -285,11 +346,22 @@ public class BoggleGame {
             //step 5. Repeat step 1 - 4
             //step 6. End when the player hits return (with no word choice).
             System.out.println(board.toString());
+
             String word = scanner.nextLine();
-            if (Objects.equals(word, "")){
+            if (word.equals("")){
                 break;
-            }
-            else if (allWords.containsKey(word.toUpperCase())){
+            } else if (word.equals("B")) {
+                System.out.println("Switching to betting mode! Please enter M[ultiplier] or C[hance] to select the mode!");
+                String mode = scanner.nextLine();
+
+                if (mode.equals("M") || mode.equals("Multiplier")) {
+                    handleBet(scanner, BetMode.MULTIPLIER);
+                } else if (mode.equals("C") || mode.equals("Chance")) {
+                    handleBet(scanner, BetMode.CHANCE);
+                } else {
+                    System.out.println("None of the modes were selected, returning to normal mode...");
+                }
+            } else if (allWords.containsKey(word.toUpperCase())){
                 System.out.println(word + " is a valid word");
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
