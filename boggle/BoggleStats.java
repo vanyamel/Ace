@@ -101,6 +101,14 @@ public class BoggleStats {
         }
     }
 
+    public int getPlayerScore() {
+        return this.pScore;
+    }
+
+    public void setPlayerScore(int score) {
+        this.pScore = score;
+    }
+
     /* 
      * End a given round.
      * This will clear out the human and computer word lists, so we can begin again.
