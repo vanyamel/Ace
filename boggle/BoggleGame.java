@@ -16,7 +16,7 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
-    private timeRush timeRush;
+    private timeRush TR;
 
     /**
      * dice used to randomize letter assignments for a small grid
@@ -38,6 +38,7 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
+        this.TR = new timeRush();
     }
 
     /* 
@@ -54,9 +55,26 @@ public class BoggleGame {
         System.out.println("will be based on word length: a 4-letter word is worth 1 point, 5-letter");
         System.out.println("words earn 2 points, and so on. After you find as many words as you can,");
         System.out.println("I will find all the remaining words.");
+        System.out.println("points*2 if time spent is less than 2 minutes");
+        System.out.println("points*1.5 if time spent is less than 3 minutes");
+        System.out.println("points*1.2 if time spent is less than 5 minutes");
         System.out.println("\nHit return when you're ready...");
     }
 
+    public void scoreMultiplier(float time){
+        if(time <= 90){
+            this.gameStats.setPlayerScore(this.gameStats.getScore()*3);
+        }
+        else if(time <= 180){
+            this.gameStats.setPlayerScore(this.gameStats.getScore()*2);
+        }
+    }
+
+    public String printTime(){
+        int minutes = (int) ((this.TR.getTimeInSeconds() % 3600) / 60);
+        int seconds = (int) (this.TR.getTimeInSeconds() % 60);
+        return String.format(minutes+":"+seconds);
+    }
 
     /* 
      * Gets information from the user to initialize a new Boggle game.
@@ -123,9 +141,9 @@ public class BoggleGame {
         }
 
         //we are done with the game! So, summarize all the play that has transpired and exit.
-        System.out.println("you spent " + this.timeRush.getTimeInSeconds() + " minutes completing this game");
-        this.timeRush.scoreMultiplier(this.timeRush.getTimeInSeconds());
+        System.out.println("you spent " + printTime() + " seconds completing this game");
         this.gameStats.summarizeGame();
+        scoreMultiplier(this.TR.getTimeInSeconds());
         System.out.println("Thanks for playing!");
     }
 
@@ -291,11 +309,13 @@ public class BoggleGame {
             }
             else if (allWords.containsKey(word.toUpperCase())){
                 System.out.println(word + " is a valid word");
+                System.out.println("Timer:" +printTime());
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
             }
             else {
                 System.out.println("not a valid word or is already used");
+                System.out.println("Timer:" + printTime());
             }
         }
     }
