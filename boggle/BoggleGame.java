@@ -266,6 +266,8 @@ public class BoggleGame {
     }
 
     private void handleBet(Scanner scanner, BetMode mode) {
+        System.out.println("Current points: " + gameStats.getPlayerScore());
+
         switch(mode) {
             case MULTIPLIER:
                 System.out.println("Multiplier mode selected. Enter the amount of points you wish to bet: ");
@@ -277,7 +279,7 @@ public class BoggleGame {
                     // make sure we don't take so many points that the player ends up in the negatives,
                     // that would just be cruel
                     gameStats.setPlayerScore(Math.max(0, gameStats.getPlayerScore() - 10));
-                } else if (num < gameStats.getPlayerScore()) {
+                } else if (num > gameStats.getPlayerScore()) {
                     System.out.println("You don't have that many points. Returning...");
                 } else {
                     try {
