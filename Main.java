@@ -5,6 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import javafx.scene.control.Label;
 /**
  * The Main class for the first Assignment in CSC207, Fall 2022
  */
@@ -20,12 +26,9 @@ public class Main extends Application {
         b.playGame();
     }
     public void start(Stage stage) {
-        BorderPane borderPane = new BorderPane();
-        Scene scene = new Scene(borderPane, 640, 480);
-        scene.setFill(Color.BLUE);
+        Scene scene = new Scene(BoggleView.createBoard(), 640, 480);
         stage.setScene(scene);
         stage.show();
-    }
-
+}
 
 }
