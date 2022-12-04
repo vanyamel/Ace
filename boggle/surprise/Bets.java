@@ -1,14 +1,14 @@
 package boggle.surprise;
 
 public class Bets {
-    public static boolean chance(double chance) {
+    public static boolean chance(double chance) throws BadBetException {
         if (chance > 1.0 || chance < 0.0)
             throw new BadBetException("Invalid bet chance");
 
         return TrueRandom.nextDouble() < chance;
     }
 
-    public static int multiplier(int points) {
+    public static int multiplier(int points) throws BadBetException {
         int value = TrueRandom.nextInt(Multiplier.POINT_ONE.ordinal(), Multiplier.TEN.ordinal());
 
         Multiplier result = Multiplier.values()[value];
@@ -22,8 +22,7 @@ public class Bets {
             case TWO_POINT_FIVE: return (int) (points * 2.5);
             case TEN: return points * 10;
 
-            default:
-                break;
+            default: break;
         }
 
         throw new BadBetException("Invalid multiplier generated");
