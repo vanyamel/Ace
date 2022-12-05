@@ -143,11 +143,11 @@ public class BoggleGame {
         //we are done with the game! So, summarize all the play that has transpired and exit.
         System.out.println("you spent " + printTime() + " seconds completing this game");
         this.gameStats.summarizeGame();
-        scoreMultiplier(this.TR.getTimeInSeconds());
+        scoreMultiplier(TR.getTimeInSeconds());
         System.out.println("Thanks for playing!");
     }
 
-    /* 
+    /*
      * Play a round of Boggle.
      * This initializes the main objects: the board, the dictionary, the map of all
      * words on the board, and the set of words found by the user. These objects are
@@ -208,7 +208,7 @@ public class BoggleGame {
     }
 
 
-    /* 
+    /*
      * This should be a recursive function that finds all valid words on the boggle board.
      * Every word should be valid (i.e. in the boggleDict) and of length 4 or more.
      * Words that are found should be entered into the allWords HashMap.  This HashMap
@@ -283,7 +283,7 @@ public class BoggleGame {
 
     }
 
-    /* 
+    /*
      * Gets words from the user.  As words are input, check to see that they are valid.
      * If yes, add the word to the player's word list (in boggleStats) and increment
      * the player's score (in boggleStats).
@@ -303,13 +303,22 @@ public class BoggleGame {
             //step 5. Repeat step 1 - 4
             //step 6. End when the player hits return (with no word choice).
             System.out.println(board.toString());
+            System.out.println("press 1 for hints, a random word will be given");
             String word = scanner.nextLine();
             if (Objects.equals(word, "")){
                 break;
             }
+            else if (Objects.equals(word, "1")){
+                Random r = new Random();
+                Object[] hintWords = allWords.keySet().toArray();
+                String hintWord = (String) hintWords[r.nextInt(hintWords.length)];
+                    System.out.print("starts with " + hintWord.toLowerCase().charAt(0) +
+                            " and ends with " + hintWord.toLowerCase().charAt(hintWord.length()-1));
+            }
             else if (allWords.containsKey(word.toUpperCase())){
                 System.out.println(word + " is a valid word");
-                System.out.println("Timer:" +printTime());
+                System.out.println("Timer:");
+                printTime();
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
             }
