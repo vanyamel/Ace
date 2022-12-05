@@ -26,7 +26,7 @@ public class Main extends Application {
         b.playGame();
     }
     public void start(Stage stage) {
-        Scene scene = new Scene(BoggleView.createBoard(), 640, 480);
+        Scene scene = new Scene(BoggleView.createBoard("helloalinadeem19"), 640, 480);
         stage.setScene(scene);
         stage.show();
 }

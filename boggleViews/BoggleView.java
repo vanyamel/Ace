@@ -1,4 +1,5 @@
 package boggleViews;
+import boggle.BoggleGrid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -23,37 +24,68 @@ import model.TetrisModel;
 
 public class BoggleView {
 // attempting to put together a proper looking grid, trial and error
-public static BorderPane createBoard(){
+static Stage stage;
+    Scene scene;
+public static BorderPane createBoard(String Letters){
     BorderPane borderPane = new BorderPane();
     borderPane.setStyle("-fx-background-color: #ffd0fe;");
 
-    Label top = createLabel("Top");
-    top.setStyle("-fx-background-color: #ffc3cb;-fx-padding: 10px;");
-    borderPane.setTop(top);
+
+    Button Hints = new Button("Hints");
+    Button TimeRush = new Button("Time Rush");
+    Button SurpriseMechanic = new Button("Surprise Mechanic");
+
+    Hints.setPrefWidth(Integer.MAX_VALUE);
+    TimeRush.setPrefWidth(Integer.MAX_VALUE);
+    SurpriseMechanic.setPrefWidth(Integer.MAX_VALUE);
+
+    HBox controls = new HBox(10, Hints, TimeRush, SurpriseMechanic);
+    controls.setPadding(new Insets(10, 10, 10, 10));
+    controls.setAlignment(Pos.TOP_CENTER);
+    borderPane.setTop(controls);
+
+
+
+
 
     Label left = createLabel("Left");
     left.setStyle("-fx-background-color: #ffefc8;-fx-padding: 10px;");
     borderPane.setLeft(left);
+
+    Label wordCount = new Label("Number of words found: ");
+    wordCount.setFont(new Font(10));
+    wordCount.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+
+
+    Label wordLabel = new Label("Words Found: ");
+    wordLabel.setFont(new Font(10));
+    wordLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+
+    VBox wordBox = new VBox(10,wordCount, wordLabel);
+    wordBox.setPadding(new Insets(10, 10, 10, 10));
+    wordBox.setSpacing(30);
+    wordBox.setAlignment(Pos.TOP_CENTER);
+    borderPane.setLeft(wordBox);
 //
 
 
 //
-    Button button1 = new Button("Button 1");
-    Button button2 = new Button("Button 2");
-    Button button3 = new Button("Button 3");
-    Button button4 = new Button("Button 4");
-    Button button5 = new Button("Button 5");
-    Button button6 = new Button("Button 6");
-    Button button7 = new Button("Button 1");
-    Button button8 = new Button("Button 2");
-    Button button9 = new Button("Button 3");
-    Button button10 = new Button("Button 4");
-    Button button11 = new Button("Button 5");
-    Button button12 = new Button("Button 6");
-    Button button13 = new Button("Button 1");
-    Button button14 = new Button("Button 2");
-    Button button15 = new Button("Button 3");
-    Button button16 = new Button("Button 4");
+    Button button1 = new Button(String.valueOf(Letters.charAt(0)));
+    Button button2 = new Button(String.valueOf(Letters.charAt(1)));
+    Button button3 = new Button(String.valueOf(Letters.charAt(2)));
+    Button button4 = new Button(String.valueOf(Letters.charAt(3)));
+    Button button5 = new Button(String.valueOf(Letters.charAt(4)));
+    Button button6 = new Button(String.valueOf(Letters.charAt(5)));
+    Button button7 = new Button(String.valueOf(Letters.charAt(6)));
+    Button button8 = new Button(String.valueOf(Letters.charAt(7)));
+    Button button9 = new Button(String.valueOf(Letters.charAt(8)));
+    Button button10 = new Button(String.valueOf(Letters.charAt(9)));
+    Button button11 = new Button(String.valueOf(Letters.charAt(10)));
+    Button button12 = new Button(String.valueOf(Letters.charAt(11)));
+    Button button13 = new Button(String.valueOf(Letters.charAt(12)));
+    Button button14 = new Button(String.valueOf(Letters.charAt(13)));
+    Button button15 = new Button(String.valueOf(Letters.charAt(14)));
+    Button button16 = new Button(String.valueOf(Letters.charAt(15)));
     button1.setPrefWidth(Integer.MAX_VALUE);
     button2.setPrefWidth(Integer.MAX_VALUE);
     button3.setPrefWidth(Integer.MAX_VALUE);
@@ -87,8 +119,6 @@ public static BorderPane createBoard(){
     button15.setPrefHeight(Integer.MAX_VALUE);
     button16.setPrefHeight(Integer.MAX_VALUE);
 
-char a = 'a';
-    button1 = new Button(String.valueOf(a)); button1.setPrefHeight(Integer.MAX_VALUE); button1.setPrefWidth(Integer.MAX_VALUE);
 
     GridPane gridPane = new GridPane();
 
@@ -113,14 +143,39 @@ char a = 'a';
     borderPane.setCenter(gridPane);
 
 
-    Label right = createLabel("Right");
-    right.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
-    borderPane.setRight(right);
+//    Label right = createLabel("Right");
+//    right.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+//    borderPane.setRight(right);
 
-    Label bottom = createLabel("Bottom");
+    Label ScoreM = createLabel("Score Multiplier: ");
     //bottom.setStyle("-fx-padding: 10px;");
-    bottom.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
-    borderPane.setBottom(bottom);
+    ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
+    Label Time = createLabel("Time: ");
+    //bottom.setStyle("-fx-padding: 10px;");
+    Time.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
+
+    VBox timeRush = new VBox(10, Time, ScoreM);
+    timeRush.setPadding(new Insets(10, 10, 10, 10));
+    timeRush.setAlignment(Pos.BOTTOM_LEFT);
+    borderPane.setBottom(timeRush);
+
+
+
+    Label scoreLabel = new Label("Player Score is: 0");
+    scoreLabel.setFont(new Font(12));
+    scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+
+
+    Label cscoreLabel = new Label("Computer Score is: 0");
+    cscoreLabel.setFont(new Font(12));
+    cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+
+    VBox cscoreBox = new VBox(10, scoreLabel, cscoreLabel);
+    cscoreBox.setPadding(new Insets(10, 10, 10, 10));
+    cscoreBox.setSpacing(30);
+    cscoreBox.setAlignment(Pos.TOP_CENTER);
+    borderPane.setRight(cscoreBox);
+
     return borderPane;
 }
 
