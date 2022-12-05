@@ -1,4 +1,5 @@
 import boggle.BoggleGame;
+import boggle.tts.Speaker;
 
 /**
  * The Main class for the first Assignment in CSC207, Fall 2022
@@ -9,9 +10,12 @@ public class Main {
     * @param args command line arguments.
     **/
     public static void main(String[] args) {
+        Speaker speaker = Speaker.getInstance();
+        speaker.init();
         BoggleGame b = new BoggleGame();
         b.giveInstructions();
         b.playGame();
+        speaker.deinit();
     }
 
 }
