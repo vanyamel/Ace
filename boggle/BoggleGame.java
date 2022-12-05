@@ -63,10 +63,12 @@ public class BoggleGame {
 
     public void scoreMultiplier(float time){
         if(time <= 90){
-            this.gameStats.setPlayerScore(this.gameStats.getScore()*3);
+            int a = this.gameStats.getScoreTotal() *3;
+            this.gameStats.setPlayerScoreTotal(a);
         }
         else if(time <= 180){
-            this.gameStats.setPlayerScore(this.gameStats.getScore()*2);
+            int b = this.gameStats.getScoreTotal() *2;
+            this.gameStats.setPlayerScoreTotal(b);
         }
     }
 
@@ -142,8 +144,8 @@ public class BoggleGame {
 
         //we are done with the game! So, summarize all the play that has transpired and exit.
         System.out.println("you spent " + printTime() + " seconds completing this game");
-        this.gameStats.summarizeGame();
         scoreMultiplier(TR.getTimeInSeconds());
+        this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
     }
 
