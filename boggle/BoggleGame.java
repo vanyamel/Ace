@@ -16,7 +16,9 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
-    private timeRush TR;
+    private Hints hint;
+
+    private TimeRush TR;
 
     /**
      * dice used to randomize letter assignments for a small grid
@@ -32,13 +34,16 @@ public class BoggleGame {
                     "BJKQXZ", "CCNSTW", "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DDHNOT", "DHHLOR",
                     "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU", "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
 
+    private boolean hintGet;
+
     /* 
      * BoggleGame constructor
      */
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
-        this.TR = new timeRush();
+        this.TR = new TimeRush();
+        this.hint = new Hints(this.gameStats);
     }
 
     /* 
@@ -70,12 +75,6 @@ public class BoggleGame {
             int b = this.gameStats.getScoreTotal() *2;
             this.gameStats.setPlayerScoreTotal(b);
         }
-    }
-
-    public String printTime(){
-        int minutes = (int) ((this.TR.getTimeInSeconds() % 3600) / 60);
-        int seconds = (int) (this.TR.getTimeInSeconds() % 60);
-        return String.format(minutes+":"+seconds);
     }
 
     /* 
@@ -143,8 +142,9 @@ public class BoggleGame {
         }
 
         //we are done with the game! So, summarize all the play that has transpired and exit.
-        System.out.println("you spent " + printTime() + " seconds completing this game");
+        System.out.println("you spent " + TR.printTime() + " seconds completing this game");
         scoreMultiplier(TR.getTimeInSeconds());
+        hint.deductScore(hintGet);
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
     }
@@ -294,9 +294,10 @@ public class BoggleGame {
      * @param board The boggle board
      * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
      */
-    private void humanMove(BoggleGrid board, Map<String,ArrayList<Position>> allWords){
+    private void humanMove(BoggleGrid board, Map<String,ArrayList<Position>> allWords) {
         System.out.println("It's your turn to find some words!");
-        while(true) {
+        hintGet = false;
+        while (true) {
             //You write code here!
             //step 1. Print the board for the user, so they can scan it for words
             //step 2. Get a input (a word) from the user via the console
@@ -307,26 +308,18 @@ public class BoggleGame {
             System.out.println(board.toString());
             System.out.println("press 1 for hints, a random word will be given");
             String word = scanner.nextLine();
-            if (Objects.equals(word, "")){
+            if (Objects.equals(word, "")) {
                 break;
-            }
-            else if (Objects.equals(word, "1")){
-                Random r = new Random();
-                Object[] hintWords = allWords.keySet().toArray();
-                String hintWord = (String) hintWords[r.nextInt(hintWords.length)];
-                    System.out.print("starts with " + hintWord.toLowerCase().charAt(0) +
-                            " and ends with " + hintWord.toLowerCase().charAt(hintWord.length()-1));
-            }
-            else if (allWords.containsKey(word.toUpperCase())){
+            } else if (Objects.equals(word, "1")) {
+                hintGet = hint.getHint(allWords, hintGet);
+            } else if (allWords.containsKey(word.toUpperCase())) {
                 System.out.println(word + " is a valid word");
-                System.out.println("Timer:");
-                printTime();
+                System.out.println("Timer:" + TR.printTime());
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
-            }
-            else {
+            } else {
                 System.out.println("not a valid word or is already used");
-                System.out.println("Timer:" + printTime());
+                System.out.println("Timer:" + TR.printTime());
             }
         }
     }
