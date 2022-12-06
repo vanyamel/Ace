@@ -157,6 +157,7 @@ public class BoggleGame {
      * passed by reference from here to many other functions.
      */
     public void playRound(int size, String letters){
+
         //step 1. initialize the grid
         BoggleGrid grid = new BoggleGrid(size);
         grid.initalizeBoard(letters);
@@ -169,6 +170,7 @@ public class BoggleGame {
         humanMove(grid, allWords);
         //step 5. allow the computer to identify remaining words
         computerMove(allWords);
+
     }
 
     /*

@@ -183,8 +183,6 @@ public class BoggleStats {
         return this.pScoreTotal;
     }
 
-    public void setPlayerScoreTotal(float score) {
-        this.pScoreTotal = (int) score;
-    }
+    public void setPlayerScoreTotal(float score) {this.pScoreTotal = (int) score;}
 
 }
