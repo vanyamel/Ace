@@ -58,6 +58,22 @@ public class BoggleStats {
         }
     }
 
+    public int getpScore() {
+        return pScore;
+    }
+
+    public int getpScoreTotal() {
+        return pScoreTotal;
+    }
+
+    public int getcScore() {
+        return cScore;
+    }
+
+    public int getcScoreTotal() {
+        return cScoreTotal;
+    }
+
     /* BoggleStats constructor
      * ----------------------
      * Sets round, totals and averages to 0.

@@ -156,6 +156,48 @@ public class BoggleGame {
         computerMove(allWords);
     }
 
+    private Map<String, ArrayList<Position>> allWords = new HashMap<String, ArrayList<Position>>();
+
+    private BoggleGrid grid = new BoggleGrid(4);
+
+    public BoggleGrid getGrid() {
+        return grid;
+    }
+
+    public String initRound() {
+        int boardSize = 4;
+
+        String letters = randomizeLetters(boardSize);
+
+        grid.initalizeBoard(letters);
+
+        Dictionary boggleDict = new Dictionary("wordlist.txt");
+        findAllWords(this.allWords, boggleDict, grid);
+
+        return letters;
+    }
+
+    public enum MoveResult {
+        BAD_WORD,
+        EMPTY,
+        WORD_FOUND
+    }
+
+    public MoveResult humanMoveOnce(String word) {
+        if (word.equals("")){
+            computerMove(allWords);
+            return MoveResult.EMPTY;
+        }
+
+        if (allWords.containsKey(word.toUpperCase())){
+            this.gameStats.addWord(word, BoggleStats.Player.Human);
+            allWords.remove(word.toUpperCase());
+            return MoveResult.WORD_FOUND;
+        }
+
+        return MoveResult.BAD_WORD;
+    }
+
     /*
      * This method should return a String of letters (length 16 or 25 depending on the size of the grid).
      * There will be one letter per grid position, and they will be organized left to right,
