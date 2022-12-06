@@ -21,12 +21,14 @@ public class Main extends Application {
     **/
     public static void main(String[] args) {
         launch();
-        BoggleGame b = new BoggleGame();
-        b.giveInstructions();
-        b.playGame();
+//        BoggleGame b = new BoggleGame();
+//        b.playGame();
+        //b.giveInstructions();
+        //b.playGame();
     }
     public void start(Stage stage) {
-        Scene scene = new Scene(BoggleView.createBoard("helloalinadeem19"), 640, 480);
+        BoggleView b = new BoggleView();
+        Scene scene = new Scene(b.createBoard(), 1000, 800);
         stage.setScene(scene);
         stage.show();
 }

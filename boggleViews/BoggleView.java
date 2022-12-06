@@ -1,4 +1,5 @@
 package boggleViews;
+import boggle.BoggleGame;
 import boggle.BoggleGrid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -6,65 +7,108 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.TetrisModel;
 
 public class BoggleView {
 // attempting to put together a proper looking grid, trial and error
-static Stage stage;
-    Scene scene;
-public static BorderPane createBoard(String Letters){
+    private BoggleGame game;
+
+    private String choice;
+
+    private String output;
+    public BoggleView(){
+        //this.game = new BoggleGame();
+    }
+
+public BorderPane createBoard(){
+        game = new BoggleGame();
+        String Letters = "helloalinadeem19";
+//        if (!this.game.getLetters().isEmpty()) {
+//            Letters = this.game.getLetters();
+//        }
+
     BorderPane borderPane = new BorderPane();
     borderPane.setStyle("-fx-background-color: #ffd0fe;");
+    borderPane.setPadding(new Insets(10, 10, 10, 10));
 
-
+    Button Nightmode = new Button("NightMode");
     Button Hints = new Button("Hints");
     Button TimeRush = new Button("Time Rush");
     Button SurpriseMechanic = new Button("Surprise Mechanic");
+    Hints.setFont(new Font(14));
+    TimeRush.setFont(new Font(14));
+    SurpriseMechanic.setFont(new Font(14));
+    Nightmode.setFont(new Font(14));
 
     Hints.setPrefWidth(Integer.MAX_VALUE);
     TimeRush.setPrefWidth(Integer.MAX_VALUE);
     SurpriseMechanic.setPrefWidth(Integer.MAX_VALUE);
+    Nightmode.setPrefWidth(Integer.MAX_VALUE);
 
-    HBox controls = new HBox(10, Hints, TimeRush, SurpriseMechanic);
+    HBox controls = new HBox(10, Hints, TimeRush, SurpriseMechanic,Nightmode);
     controls.setPadding(new Insets(10, 10, 10, 10));
     controls.setAlignment(Pos.TOP_CENTER);
+    controls.setPrefHeight(75);
     borderPane.setTop(controls);
 
+//text try
+    Text text = new Text();
+    choice = "1";
+    output = "gg ";
+    text.setText(output+"\n"); // make variable containing our text
+    text.setFont(new Font(12));
+    text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
+    Button enter = new Button("ENTER");
+    TextField input = new TextField();
+    VBox comms = new VBox(text,input, enter);
+    comms.setPrefWidth(300);
+    comms.setAlignment(Pos.CENTER);
+    borderPane.setRight(comms);
+    enter.setOnAction(e -> choice = input.getText());
 
 
+//
+
+    Label scoreLabel = new Label("Player Score is: 0");
+    scoreLabel.setFont(new Font(12));
+    scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
 
-    Label left = createLabel("Left");
-    left.setStyle("-fx-background-color: #ffefc8;-fx-padding: 10px;");
-    borderPane.setLeft(left);
+    Label cscoreLabel = new Label("Computer Score is: 0");
+    cscoreLabel.setFont(new Font(12));
+    cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+
+//    VBox cscoreBox = new VBox(10, scoreLabel, cscoreLabel);
+//    cscoreBox.setPadding(new Insets(10, 10, 10, 10));
+//    cscoreBox.setSpacing(30);
+//    cscoreBox.setAlignment(Pos.TOP_CENTER);
+//    borderPane.setRight(cscoreBox);
+    //
 
     Label wordCount = new Label("Number of words found: ");
-    wordCount.setFont(new Font(10));
+    wordCount.setFont(new Font(12));
     wordCount.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
 
     Label wordLabel = new Label("Words Found: ");
-    wordLabel.setFont(new Font(10));
+    wordLabel.setFont(new Font(12));
     wordLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
-    VBox wordBox = new VBox(10,wordCount, wordLabel);
+    VBox wordBox = new VBox(10,scoreLabel,cscoreLabel,wordCount, wordLabel);
     wordBox.setPadding(new Insets(10, 10, 10, 10));
     wordBox.setSpacing(30);
     wordBox.setAlignment(Pos.TOP_CENTER);
+    wordBox.setPrefWidth(200);
     borderPane.setLeft(wordBox);
 //
 
@@ -143,10 +187,6 @@ public static BorderPane createBoard(String Letters){
     borderPane.setCenter(gridPane);
 
 
-//    Label right = createLabel("Right");
-//    right.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
-//    borderPane.setRight(right);
-
     Label ScoreM = createLabel("Score Multiplier: ");
     //bottom.setStyle("-fx-padding: 10px;");
     ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
@@ -161,21 +201,20 @@ public static BorderPane createBoard(String Letters){
 
 
 
-    Label scoreLabel = new Label("Player Score is: 0");
-    scoreLabel.setFont(new Font(12));
-    scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
-
-
-    Label cscoreLabel = new Label("Computer Score is: 0");
-    cscoreLabel.setFont(new Font(12));
-    cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
-
-    VBox cscoreBox = new VBox(10, scoreLabel, cscoreLabel);
-    cscoreBox.setPadding(new Insets(10, 10, 10, 10));
-    cscoreBox.setSpacing(30);
-    cscoreBox.setAlignment(Pos.TOP_CENTER);
-    borderPane.setRight(cscoreBox);
-
+//    Label scoreLabel = new Label("Player Score is: 0");
+//    scoreLabel.setFont(new Font(12));
+//    scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+//
+//
+//    Label cscoreLabel = new Label("Computer Score is: 0");
+//    cscoreLabel.setFont(new Font(12));
+//    cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+//
+//    VBox cscoreBox = new VBox(10, scoreLabel, cscoreLabel);
+//    cscoreBox.setPadding(new Insets(10, 10, 10, 10));
+//    cscoreBox.setSpacing(30);
+//    cscoreBox.setAlignment(Pos.TOP_CENTER);
+//    borderPane.setRight(cscoreBox);
     return borderPane;
 }
 
@@ -186,4 +225,15 @@ public static BorderPane createBoard(String Letters){
         return label;
     }
 
+    public String getChoice() {
+        return choice;
+    }
+
+    public void setChoice(String choice) {
+        this.choice = choice;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
+    }
 }

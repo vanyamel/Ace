@@ -1,5 +1,7 @@
 package boggle;
 
+import boggleViews.BoggleView;
+
 import java.util.*;
 
 /**
@@ -15,6 +17,10 @@ public class BoggleGame {
      * stores game statistics
      */ 
     private BoggleStats gameStats;
+
+    private  BoggleView view;
+
+    private String Letters;
 
     /**
      * dice used to randomize letter assignments for a small grid
@@ -36,6 +42,7 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
+        //this.view = new BoggleView();
     }
 
     /* 
@@ -63,9 +70,12 @@ public class BoggleGame {
     public void playGame(){
         int boardSize;
         while(true){
-            System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
-            String choiceGrid = scanner.nextLine();
+            //System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
+            this.view.setOutput("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
 
+            String choiceGrid = (view.getChoice());
+            // String choiceGrid = scanner.nextLine();
+            this.view.setOutput(choiceGrid);
             //get grid size preference
             if(choiceGrid == "") break; //end game if user inputs nothing
             while(!choiceGrid.equals("1") && !choiceGrid.equals("2")){
@@ -182,6 +192,7 @@ public class BoggleGame {
                 letters.append(dice.charAt(rand.nextInt(dice.length() - 1)));
             }
         }
+        this.Letters = letters.toString();
         return letters.toString();
     }
 
@@ -311,6 +322,10 @@ public class BoggleGame {
                 this.gameStats.addWord(word, BoggleStats.Player.Computer);
             }
         }
+    }
+
+    public String getLetters(){
+        return this.Letters;
     }
 
 }
