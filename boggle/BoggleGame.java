@@ -3,6 +3,7 @@ package boggle;
 import boggle.surprise.BadBetException;
 import boggle.surprise.BetMode;
 import boggle.surprise.Bets;
+import boggle.tts.Speaker;
 
 import java.util.*;
 
@@ -20,7 +21,7 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
-    private timeRush timeRush;
+    private TimeRush timeRush;
 
     /**
      * dice used to randomize letter assignments for a small grid
@@ -42,6 +43,7 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
+        this.timeRush = new TimeRush();
     }
 
     /* 
@@ -67,6 +69,9 @@ public class BoggleGame {
      * It will loop until the user indicates they are done playing.
      */
     public void playGame(){
+        Speaker speaker = Speaker.getInstance();
+        speaker.speak("Welcome to Boggle!");
+
         int boardSize;
         while(true){
             System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
@@ -363,6 +368,7 @@ public class BoggleGame {
                 }
             } else if (allWords.containsKey(word.toUpperCase())){
                 System.out.println(word + " is a valid word");
+                Speaker.getInstance().speak(word);
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
             }
