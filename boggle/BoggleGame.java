@@ -390,8 +390,6 @@ public class BoggleGame {
     public int getcwordcount() {
         return gameStats.getcwordcount();
     }
-    public int getRound(){
-        return gameStats.getRound();
-    }
-
+    public int getRound(){return gameStats.getRound();}
+//
 }

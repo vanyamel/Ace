@@ -138,40 +138,7 @@ public class BoggleView {
                 }
             });
 
-
-//            for (int i = 0; i < buttons.length; i++) {
-//                buttons[i] = new Button(String.valueOf(letters.charAt(i)));
-//                buttons[i].setPrefWidth(Integer.MAX_VALUE);
-//                buttons[i].setPrefHeight(Integer.MAX_VALUE);
-//
-//                Button button = buttons[i];
-//                buttons[i].setOnAction(e -> {
-//                    input.setText(input.getText() + button.getText());
-//                });
-//            }
-        createButtons(this.letters);
-
-            //gridPane = new GridPane();
-//
-//            gridPane.add(buttons[0], 0, 0, 1, 1);
-//            gridPane.add(buttons[1], 1, 0, 1, 1);
-//            gridPane.add(buttons[2], 2, 0, 1, 1);
-//            gridPane.add(buttons[3], 3, 0, 1, 1);
-//            gridPane.add(buttons[4], 0, 1, 1, 1);
-//            gridPane.add(buttons[5], 1, 1, 1, 1);
-//            gridPane.add(buttons[6], 2, 1, 1, 1);
-//            gridPane.add(buttons[7], 3, 1, 1, 1);
-//            gridPane.add(buttons[8], 0, 2, 1, 1);
-//            gridPane.add(buttons[9], 1, 2, 1, 1);
-//            gridPane.add(buttons[10], 2, 2, 1, 1);
-//            gridPane.add(buttons[11], 3, 2, 1, 1);
-//            gridPane.add(buttons[12], 0, 3, 1, 1);
-//            gridPane.add(buttons[13], 1, 3, 1, 1);
-//            gridPane.add(buttons[14], 2, 3, 1, 1);
-//            gridPane.add(buttons[15], 3, 3, 1, 1);
-//            gridPane.setAlignment(Pos.CENTER);
-//            borderPane.setCenter(gridPane);
-
+            createButtons(this.letters);
             createGrid(this.buttons);
 
             Label ScoreM = createLabel("Score Multiplier: ");
