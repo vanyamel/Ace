@@ -147,6 +147,7 @@ public class BoggleGame {
         hint.deductScore(hintGet);
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
+
     }
 
     /*
