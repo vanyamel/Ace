@@ -22,7 +22,9 @@ public class Hints {
                     " and ends with " + hintWord.toLowerCase().charAt(hintWord.length()-1));
         }
         else{
+
             System.out.println("you already got a hint");
+
         }
         return true;
     }
