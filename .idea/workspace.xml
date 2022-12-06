@@ -4,25 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c0b283a7-4f82-4796-99c1-6fbab2eb4214" name="Changes" comment="hints completed">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/TimeRush.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/BadBetException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/BetMode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/Bets$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/Bets$Multiplier.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/Bets.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/surprise/TrueRandom.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/boggle/BoggleStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/boggle/BoggleStats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/boggle/timeRush.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Assignment1/boggle/BoggleGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/BoggleGame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Assignment1/boggle/BoggleStats.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignment1/boggle/BoggleStats.class" afterDir="false" />
-    </list>
+    <list default="true" id="c0b283a7-4f82-4796-99c1-6fbab2eb4214" name="Changes" comment="time rush and hints completed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,7 +129,28 @@
       <option name="project" value="LOCAL" />
       <updated>1670350276355</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="hints completed">
+      <created>1670351075776</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1670351075776</updated>
+    </task>
+    <task id="LOCAL-00004" summary="hints completed">
+      <created>1670351118485</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1670351118485</updated>
+    </task>
+    <task id="LOCAL-00005" summary="time rush and hints completed">
+      <created>1670351192427</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1670351192427</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -163,7 +166,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="time rush completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="time rush completed" />
+    <MESSAGE value="hints completed" />
+    <MESSAGE value="time rush and hints completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="time rush and hints completed" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
