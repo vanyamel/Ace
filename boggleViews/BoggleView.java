@@ -1,45 +1,38 @@
 package boggleViews;
 
 import boggle.BoggleGame;
-import boggle.BoggleGrid;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BoggleView {
     // attempting to put together a proper looking grid, trial and error
     private BoggleGame game;
 
+   private BorderPane borderPane = new BorderPane();
+    private GridPane gridPane = new GridPane();
     private String choice;
 
     private String output;
-
-    public BoggleView() {
-        //this.game = new BoggleGame();
-    }
-
-    private Button[] buttons = new Button[16];
+    private TextField input = new TextField();
     private String letters;
 
-    public BorderPane createBoard() {
-        game = new BoggleGame();
-        letters = game.initRound();
+    private Button[] buttons = new Button[16];
 
-        BorderPane borderPane = new BorderPane();
+    public BoggleView() {
+        this.game = new BoggleGame();
+    }
+
+
+    public BorderPane createBoard() {
+        //game = new BoggleGame();
+
+        //BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: #ffd0fe;");
         borderPane.setPadding(new Insets(10, 10, 10, 10));
 
@@ -62,35 +55,10 @@ public class BoggleView {
         controls.setAlignment(Pos.TOP_CENTER);
         controls.setPrefHeight(75);
         borderPane.setTop(controls);
+        controls.setMaxWidth(990);
 
-//text try
-        Text text = new Text();
-        choice = "1";
-        output = "gg ";
-        text.setText(output + "\n"); // make variable containing our text
-        text.setFont(new Font(12));
-        text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
-        Button enter = new Button("ENTER");
-        TextField input = new TextField();
-        VBox comms = new VBox(text, input, enter);
-        comms.setPrefWidth(300);
-        comms.setAlignment(Pos.CENTER);
-        borderPane.setRight(comms);
-        enter.setOnAction(e -> {
-            BoggleGame.MoveResult res = game.humanMoveOnce(input.getText());
 
-            switch(res) {
-                case BAD_WORD -> {
 
-                }
-                case EMPTY -> {
-
-                }
-                case WORD_FOUND -> {
-
-                }
-            }
-        });
 
         Label scoreLabel = new Label("Player Score is: 0");
         scoreLabel.setFont(new Font(12));
@@ -108,7 +76,10 @@ public class BoggleView {
 
         Label wordLabel = new Label("Words Found: ");
         wordLabel.setFont(new Font(12));
+        wordLabel.setAlignment(Pos.TOP_CENTER);
         wordLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+        wordLabel.setPrefHeight(Integer.MAX_VALUE); wordLabel.setPrefWidth(Integer.MAX_VALUE);
+
 
         VBox wordBox = new VBox(10, scoreLabel, cscoreLabel, wordCount, wordLabel);
         wordBox.setPadding(new Insets(10, 10, 10, 10));
@@ -117,51 +88,103 @@ public class BoggleView {
         wordBox.setPrefWidth(200);
         borderPane.setLeft(wordBox);
 
-        for (int i = 0; i < buttons.length; ++i) {
-            buttons[i] = new Button(String.valueOf(letters.charAt(i)));
-            buttons[i].setPrefWidth(Integer.MAX_VALUE);
-            buttons[i].setPrefHeight(Integer.MAX_VALUE);
+            letters = game.initRound();
+            Text text = new Text();
+            output = "Enter a word ";
+            text.setText(output + "\n"); // make variable containing our text
+            text.setFont(new Font(12));
+            text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
+            Button enter = new Button("ENTER");
+            VBox comms = new VBox(text, input, enter);
+            comms.setPrefWidth(300);
+            comms.setMaxWidth(300);
+            text.maxWidth(300);
+            comms.setAlignment(Pos.CENTER);
+            borderPane.setRight(comms);
+            enter.setOnAction(e -> {
+                BoggleGame.MoveResult res = game.humanMoveOnce(input.getText());
 
-            Button button = buttons[i];
-            buttons[i].setOnAction(e -> {
-                input.setText(input.getText() + button.getText());
+                switch (res) {
+                    case EMPTY -> {
+                        cscoreLabel.setText("Computer Score is: " + game.getcScore());
+                        text.setText(
+                                "Player found " + game.getpwordCount() + " words this round\nComputer found "
+                                + game.getcwordcount() + " words this round \nPlayer score is " + game.getpScore() +
+                                " this round \nComputer score is " + game.getcScore() + " this round\n\nPlay again? Type 'Y' or 'N' ");
+                        text.wrappingWidthProperty();
+                        enter.setOnAction(f ->{if (input.getText().equals("Y")) {
+                            this.letters = game.initRound();
+//                            createButtons(this.letters);
+//                            createGrid(this.buttons);
+                            createBoard();
+                        } else if (input.getText().equals("N")) {
+                            text.setText("Good Game! \n\n"+game.getRound()+" rounds were played\nPlayer found "+
+                                    game.getpwordCount()+" words\nPlayer scored "+game.getpScoreTotal()+
+                                    " points\nComputer found " +game.getcwordcount()+" words\nComputer scored "
+                                    +game.getcScoreTotal()+ " points");
+                        }
+                        });
+                    }//iswrap for
+                    case BAD_WORD -> {
+                        text.setText("Invalid word, or already used, try again!!");
+                    }
+                    case WORD_FOUND -> {
+                        scoreLabel.setText("Player Score is: " + game.getpScore());
+                        wordCount.setText("Number of words found: " + game.getpwordCount());
+                        wordLabel.setText("Words Found: " + game.getPlayerWords().toString());
+                        wordLabel.setWrapText(true);
+
+                    }
+                }
             });
-        }
 
-        GridPane gridPane = new GridPane();
 
-        gridPane.add(buttons[0], 0, 0, 1, 1);
+//            for (int i = 0; i < buttons.length; i++) {
+//                buttons[i] = new Button(String.valueOf(letters.charAt(i)));
+//                buttons[i].setPrefWidth(Integer.MAX_VALUE);
+//                buttons[i].setPrefHeight(Integer.MAX_VALUE);
+//
+//                Button button = buttons[i];
+//                buttons[i].setOnAction(e -> {
+//                    input.setText(input.getText() + button.getText());
+//                });
+//            }
+        createButtons(this.letters);
 
-        gridPane.add(buttons[1], 1, 0, 1, 1);
-        gridPane.add(buttons[2], 2, 0, 1, 1);
-        gridPane.add(buttons[3], 3, 0, 1, 1);
-        gridPane.add(buttons[4], 0, 1, 1, 1);
-        gridPane.add(buttons[5], 1, 1, 1, 1);
-        gridPane.add(buttons[6], 2, 1, 1, 1);
-        gridPane.add(buttons[7], 3, 1, 1, 1);
-        gridPane.add(buttons[8], 0, 2, 1, 1);
-        gridPane.add(buttons[9], 1, 2, 1, 1);
-        gridPane.add(buttons[10], 2, 2, 1, 1);
-        gridPane.add(buttons[11], 3, 2, 1, 1);
-        gridPane.add(buttons[12], 0, 3, 1, 1);
-        gridPane.add(buttons[13], 1, 3, 1, 1);
-        gridPane.add(buttons[14], 2, 3, 1, 1);
-        gridPane.add(buttons[15], 3, 3, 1, 1);
-        gridPane.setAlignment(Pos.CENTER);
-        borderPane.setCenter(gridPane);
+            //gridPane = new GridPane();
+//
+//            gridPane.add(buttons[0], 0, 0, 1, 1);
+//            gridPane.add(buttons[1], 1, 0, 1, 1);
+//            gridPane.add(buttons[2], 2, 0, 1, 1);
+//            gridPane.add(buttons[3], 3, 0, 1, 1);
+//            gridPane.add(buttons[4], 0, 1, 1, 1);
+//            gridPane.add(buttons[5], 1, 1, 1, 1);
+//            gridPane.add(buttons[6], 2, 1, 1, 1);
+//            gridPane.add(buttons[7], 3, 1, 1, 1);
+//            gridPane.add(buttons[8], 0, 2, 1, 1);
+//            gridPane.add(buttons[9], 1, 2, 1, 1);
+//            gridPane.add(buttons[10], 2, 2, 1, 1);
+//            gridPane.add(buttons[11], 3, 2, 1, 1);
+//            gridPane.add(buttons[12], 0, 3, 1, 1);
+//            gridPane.add(buttons[13], 1, 3, 1, 1);
+//            gridPane.add(buttons[14], 2, 3, 1, 1);
+//            gridPane.add(buttons[15], 3, 3, 1, 1);
+//            gridPane.setAlignment(Pos.CENTER);
+//            borderPane.setCenter(gridPane);
 
-        Label ScoreM = createLabel("Score Multiplier: ");
-        //bottom.setStyle("-fx-padding: 10px;");
-        ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
-        Label Time = createLabel("Time: ");
-        //bottom.setStyle("-fx-padding: 10px;");
-        Time.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
+            createGrid(this.buttons);
 
-        VBox timeRushBox = new VBox(10, Time, ScoreM);
-        timeRushBox.setPadding(new Insets(10, 10, 10, 10));
-        timeRushBox.setAlignment(Pos.BOTTOM_LEFT);
-        borderPane.setBottom(timeRushBox);
+            Label ScoreM = createLabel("Score Multiplier: ");
+            //bottom.setStyle("-fx-padding: 10px;");
+            ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
+            Label Time = createLabel("Time: ");
+            //bottom.setStyle("-fx-padding: 10px;");
+            Time.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
 
+            VBox timeRushBox = new VBox(10, Time, ScoreM);
+            timeRushBox.setPadding(new Insets(10, 10, 10, 10));
+            timeRushBox.setAlignment(Pos.BOTTOM_LEFT);
+            borderPane.setBottom(timeRushBox);
 
         return borderPane;
     }
@@ -183,5 +206,40 @@ public class BoggleView {
 
     public void setOutput(String output) {
         this.output = output;
+    }
+
+    public void createButtons(String letters){
+        this.gridPane.getChildren().clear();
+        for (int i = 0; i < buttons.length; i++) {
+            this.buttons[i] = new Button(String.valueOf(letters.charAt(i)));
+            this.buttons[i].setPrefWidth(Integer.MAX_VALUE);
+            this.buttons[i].setPrefHeight(Integer.MAX_VALUE);
+            this.buttons[i].setMinWidth(120);
+
+            Button button = buttons[i];
+            this.buttons[i].setOnAction(e -> {
+                input.setText(input.getText() + button.getText());
+            });
+        }
+    }
+    public void createGrid(Button[] buttons){
+        gridPane.add(buttons[0], 0, 0, 1, 1);
+        gridPane.add(buttons[1], 1, 0, 1, 1);
+        gridPane.add(buttons[2], 2, 0, 1, 1);
+        gridPane.add(buttons[3], 3, 0, 1, 1);
+        gridPane.add(buttons[4], 0, 1, 1, 1);
+        gridPane.add(buttons[5], 1, 1, 1, 1);
+        gridPane.add(buttons[6], 2, 1, 1, 1);
+        gridPane.add(buttons[7], 3, 1, 1, 1);
+        gridPane.add(buttons[8], 0, 2, 1, 1);
+        gridPane.add(buttons[9], 1, 2, 1, 1);
+        gridPane.add(buttons[10], 2, 2, 1, 1);
+        gridPane.add(buttons[11], 3, 2, 1, 1);
+        gridPane.add(buttons[12], 0, 3, 1, 1);
+        gridPane.add(buttons[13], 1, 3, 1, 1);
+        gridPane.add(buttons[14], 2, 3, 1, 1);
+        gridPane.add(buttons[15], 3, 3, 1, 1);
+        gridPane.setAlignment(Pos.CENTER);
+        borderPane.setCenter(gridPane);
     }
 }

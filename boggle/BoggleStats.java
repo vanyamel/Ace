@@ -74,6 +74,17 @@ public class BoggleStats {
         return cScoreTotal;
     }
 
+    public int getpwordCount() {
+        return playerWords.size();
+    }
+    public int getcwordcount() {
+        return computerWords.size();
+    }
+
+
+
+
+
     /* BoggleStats constructor
      * ----------------------
      * Sets round, totals and averages to 0.
@@ -174,6 +185,7 @@ public class BoggleStats {
     public Set<String> getPlayerWords() {
         return this.playerWords;
     }
+    public Set<String> getComputerWords() {return this.computerWords;}
 
     /*
      * @return int The number of rounds played

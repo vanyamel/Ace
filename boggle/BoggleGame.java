@@ -70,12 +70,8 @@ public class BoggleGame {
     public void playGame(){
         int boardSize;
         while(true){
-            //System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
-            this.view.setOutput("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
-
-            String choiceGrid = (view.getChoice());
-            // String choiceGrid = scanner.nextLine();
-            this.view.setOutput(choiceGrid);
+            System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
+            String choiceGrid = scanner.nextLine();
             //get grid size preference
             if(choiceGrid == "") break; //end game if user inputs nothing
             while(!choiceGrid.equals("1") && !choiceGrid.equals("2")){
@@ -169,7 +165,7 @@ public class BoggleGame {
 
         String letters = randomizeLetters(boardSize);
 
-        grid.initalizeBoard(letters);
+        this.grid.initalizeBoard(letters);
 
         Dictionary boggleDict = new Dictionary("wordlist.txt");
         findAllWords(this.allWords, boggleDict, grid);
@@ -186,6 +182,7 @@ public class BoggleGame {
     public MoveResult humanMoveOnce(String word) {
         if (word.equals("")){
             computerMove(allWords);
+            //gameStats.endRound();
             return MoveResult.EMPTY;
         }
 
@@ -368,6 +365,33 @@ public class BoggleGame {
 
     public String getLetters(){
         return this.Letters;
+    }
+
+    public int getpScore() {return gameStats.getpScore();
+    }
+    public int getpScoreTotal() {return gameStats.getpScoreTotal();}
+
+    public int getcScore() {
+        return gameStats.getcScore();
+    }
+
+    public int getcScoreTotal() {
+        return gameStats.getcScoreTotal();
+    }
+
+    public Set<String> getPlayerWords() {
+        return gameStats.getPlayerWords();
+    }
+    public Set<String> getComputerWords() {return gameStats.getComputerWords();}
+
+    public int getpwordCount() {
+        return gameStats.getpwordCount();
+    }
+    public int getcwordcount() {
+        return gameStats.getcwordcount();
+    }
+    public int getRound(){
+        return gameStats.getRound();
     }
 
 }
