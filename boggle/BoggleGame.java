@@ -71,11 +71,11 @@ public class BoggleGame {
 
     public void scoreMultiplier(float time){
         if(time <= 90){
-            int a = this.gameStats.getpScoreTotal() *3;
+            int a = this.gameStats.getpScore() *3;
             this.gameStats.setPlayerScore(a);
         }
         else if(time <= 180){
-            int b = this.gameStats.getpScoreTotal() *2;
+            int b = this.gameStats.getpScore() *2;
             this.gameStats.setPlayerScore(b);
         }
     }
@@ -164,7 +164,7 @@ public class BoggleGame {
         BoggleGrid grid = new BoggleGrid(size);
         grid.initalizeBoard(letters);
         //step 2. initialize the dictionary of legal words
-        Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
+        //Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
         //step 3. find all legal words on the board, given the dictionary and grid arrangement.
         Map<String, ArrayList<Position>> allWords = new HashMap<String, ArrayList<Position>>();
         findAllWords(allWords, boggleDict, grid);
@@ -492,9 +492,15 @@ public class BoggleGame {
     public boolean hintAllowed(){
         return this.hintGet;
     }
+    public void sethintAllowed(){
+        this.hintGet = false;
+    }
     public String hintWord(){
         hintGet = hint.getHint(allWords,hintGet);
         return hint.getHintWord();
+    }
+    public float getTimeInSeconds(long starttime) {
+        return Math.round((System.currentTimeMillis() - starttime) / 1000f);
     }
 
 //
