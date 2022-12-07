@@ -5,17 +5,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import boggle.tts.Speaker;
 
 
 public class BoggleView {
-    // attempting to put together a proper looking grid, trial and error
     private BoggleGame game;
 
     private boolean speakerCheck = false;
 
+    private boolean nmIntiated = false;
+    private HBox bottomText = new HBox();
     private Speaker speaker = Speaker.getInstance();
    private BorderPane borderPane = new BorderPane();
     private GridPane gridPane = new GridPane();
@@ -31,6 +34,8 @@ public class BoggleView {
     private Text textBottom = new Text();
     private String letters;
 
+    //this boolean checks makes sure User cant call hints or timerush after the round ends
+    private boolean roundEnded;
     private boolean Check = false;
 
     private boolean first_round = true;
@@ -43,11 +48,18 @@ public class BoggleView {
     }
 
 
+    //This creates the board , it intilizes the letters of the board to button so it can be used to click and get the value of the button
+    //to the textfield. This also puts all the letter buttons in a gridpane which creates a grid with the buttons. This is also creates a borderpane which everything sits on
+    //the borderpane gets divided to Vbox,Hbox, text filed, Text and gridpane. This is also implements all the user stories by merging them with textfield inputs
+    //It also holds buttons to toggle which ever feature you want to select
     public BorderPane createBoard() {
-
+        this.roundEnded = false;
+        // sets borderpane color and puts paddings around it
         borderPane.setStyle("-fx-background-color: #C4A484;");
         borderPane.setPadding(new Insets(10, 10, 10, 10));
 
+
+        // Creates feature buttons and formats the text with fonts, size and alignment
         Button nightmode = new Button("NightMode");
         Button hints = new Button("Hint");
         Button timeRush = new Button("Time Rush");
@@ -65,6 +77,7 @@ public class BoggleView {
         nightmode.setPrefWidth(Integer.MAX_VALUE);
         tts.setPrefWidth(Integer.MAX_VALUE);
 
+        // Aligns buttons for features at top of borderpane by using HBox for horizontal alignment
         HBox controls = new HBox(10,tts, hints, timeRush, surpriseMechanic, nightmode);
         controls.setPadding(new Insets(10, 10, 10, 10));
         controls.setAlignment(Pos.CENTER);
@@ -72,34 +85,49 @@ public class BoggleView {
         borderPane.setTop(controls);
         controls.setMaxWidth(980);
 
+        //Sets all feature buttons to an action to initiate the feature gameplay/mode
         hints.setOnAction(e ->{
-            if(game.hintAllowed()){
-                text.setText("You already had an hint!");
-            }
-            else{
-                text.setText("Starts with "+game.hintWord().toLowerCase().charAt(0) + " and ends with "+game.hintWord().toLowerCase().charAt(game.hintWord().length()-1));
+            if(!roundEnded) {
+                if (game.hintAllowed()) {
+                    text.setText("You already had an hint!");
+                } else {
+                    hintInstructions(textBottom);
+                    text.setText("Starts with " + game.hintWord().toLowerCase().charAt(0) + " and ends with " + game.hintWord().toLowerCase().charAt(game.hintWord().length() - 1));
+                }
             }
         });
 
         timeRush.setOnAction(e ->{
-            this.startTime = System.currentTimeMillis();
-            this.Check = true;
-            text.setText("You Initiated Time Rush!! BE QUICK FOR MORE POINTS!!");
+            if(!roundEnded) {
+                this.startTime = System.currentTimeMillis();
+                this.Check = true;
+                TrInstructions(textBottom);
+                text.setText("You Initiated Time Rush!!\n BE QUICK FOR MORE POINTS!!");
+            }
         });
 
         tts.setOnAction(e->{
             if (this.speakerCheck){
                 this.speakerCheck = false;
                 tts.setText("Text-To-Speech: Off");
-            } else if (this.speakerCheck == false) {
+            } else {
                 this.speakerCheck = true;
                 tts.setText("Text-To-Speech: On");
 
             }
         });
 
+        nightmode.setOnAction(e ->{
+            if(nmIntiated == false){
+                this.nmIntiated = true;
+            } else if (this.nmIntiated == true) {
+                this.nmIntiated = false;
+            }
+            Nightmode();
+        });
 
 
+        // creates and formats labels to Hold and display Scores and words found
         Label scoreLabel = new Label("Player Score is: 0");
         scoreLabel.setFont(new Font(12));
         scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
@@ -127,6 +155,7 @@ public class BoggleView {
         cWordlabel.setPrefHeight(Integer.MAX_VALUE); cWordlabel.setPrefWidth(Integer.MAX_VALUE);
 
 
+        // Alligns buttons vertically on the left side of borderpane to display
         VBox wordBox = new VBox(10, scoreLabel, cscoreLabel, wordCount,pWordlabel, cWordlabel);
         wordBox.setPadding(new Insets(10, 10, 10, 10));
         wordBox.setSpacing(30);
@@ -134,7 +163,10 @@ public class BoggleView {
         wordBox.setPrefWidth(200);
         borderPane.setLeft(wordBox);
 
+        // This calls the initRound method in Bogglegame to initilize the board and get our random letter input for the grid
         letters = game.initRound();
+
+        // creates button and textfield to get inputs, and also formats text font and displays text through Text
         Button enter = new Button("ENTER");
             output = "Enter a word ";
             text.setText(output + "\n");
@@ -142,12 +174,13 @@ public class BoggleView {
             text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
             VBox comms = new VBox(text, input, enter);
             comms.setPrefWidth(300);
-            comms.setMaxWidth(250);
+            comms.setMaxWidth(280);
             text.maxWidth(300);
             comms.setAlignment(Pos.CENTER);
             comms.setPadding(new Insets(10,10,10,10));
             borderPane.setRight(comms);
             enter.setOnAction(e -> {
+                //calls MoveResult in Boggle to play the game and see what player inputs is valid or not
                 BoggleGame.MoveResult res = game.humanMoveOnce(input.getText());
                 input.clear();
 
@@ -156,6 +189,7 @@ public class BoggleView {
                         cscoreLabel.setText("Computer Score is: " + game.getcScore());
                         cWordlabel.setText("Computer Words found:"+game.getComputerWords());
                         cWordlabel.setWrapText(true);
+                        // Check, checks if user intitiated timeRush, will only run on TimeRush mode
                         if (this.Check){
                             int minutes = (int) ((game.getTimeInSeconds(startTime) % 3600) / 60);
                             int seconds = (int) (game.getTimeInSeconds(startTime) % 60);
@@ -163,18 +197,17 @@ public class BoggleView {
                             game.scoreMultiplier((minutes*60)+seconds);
                             this.Check = false;
                         }
+                        this.roundEnded = true;
                         String roundEnd = ("Player found " + game.getpwordCount() + " words this round\nComputer found "
                                 + game.getcwordcount() + " words this round \nPlayer score is " + game.getpScore() +
                                 " this round \nComputer score is " + game.getcScore() + " this round\n"+this.timerush+"\n\nPlay again? Type 'Y' or 'N' ");
                         text.setText(
                                 roundEnd);
-//                                "Player found " + game.getpwordCount() + " words this round\nComputer found "
-//                                + game.getcwordcount() + " words this round \nPlayer score is " + game.getpScore() +
-//                                " this round \nComputer score is " + game.getcScore() + " this round\n"+this.timerush+"\n\nPlay again? Type 'Y' or 'N' ");
                         if(this.speakerCheck){
                             speaker.speak(roundEnd);
                         }
                         text.wrappingWidthProperty();
+                        // this ends the round so we can tally up the scores
                         this.game.endRound();
                         game.sethintAllowed();
                         enter.setOnAction(f ->{if (input.getText().equals("Y")) {
@@ -182,15 +215,13 @@ public class BoggleView {
                             this.letters = game.initRound();
                             createBoard();
                         } else if (input.getText().equals("N")) {
-                            text.setText("Good Game! \n\n"+game.getRound()+" rounds were played\nPlayer found average of "+
+                            String endGame = ("Good Game! \n\n"+game.getRound()+" rounds were played\nPlayer found average of "+
                                     game.getApwordCount()+" words\nPlayer scored "+game.getpScoreTotal()+
                                     " points\nComputer found " +game.getAcwordcount()+" words\nComputer scored "
                                     +game.getcScoreTotal()+ " points");
+                            text.setText(endGame);
                             if (this.speakerCheck){
-                                speaker.speak("Good Game "+game.getRound()+" rounds were played. Player found average of "+
-                                        game.getApwordCount()+" words. Player scored "+game.getpScoreTotal()+
-                                        " points.Computer found " +game.getAcwordcount()+" words. Computer scored "
-                                        +game.getcScoreTotal()+ " points");
+                                speaker.speak(endGame);
                             }
                         }
                         });
@@ -215,20 +246,12 @@ public class BoggleView {
                 }
             });
 
-
+                // calls creatureButtons to create the Buttons using the randomized letters
                 createButtons(this.letters);
+                // Creates a grid using gridPane to put the buttons in a grid
                 createGrid(this.buttons);
 
-
-//            Label ScoreM = createLabel("Score Multiplier: ");
-//            ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
-//            Label Time = createLabel("Time: ");
-//            Time.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
-//
-//            VBox timeRushBox = new VBox(10, Time, ScoreM);
-//            timeRushBox.setPadding(new Insets(10, 10, 10, 10));
-//            timeRushBox.setAlignment(Pos.BOTTOM_LEFT);
-//            borderPane.setBottom(timeRushBox);
+                //if its the first round it'll display general game instructions
         if (first_round) {
             intro(textBottom);
             this.first_round = false;
@@ -236,7 +259,9 @@ public class BoggleView {
         text.setFont(new Font(12));
         text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
 
-        HBox bottomText = new HBox(10,textBottom);
+        //Alligns text at the bottom of borderPane using Hbox to display text horiztonally
+        // BottomText is kept for Instructions to guide user while playing the game
+       this.bottomText = new HBox(10,textBottom);
         bottomText.setAlignment(Pos.TOP_LEFT);
         bottomText.setPrefHeight(75);
         bottomText.setPadding(new Insets(10,10,10,10));
@@ -244,12 +269,6 @@ public class BoggleView {
         bottomText.setMaxWidth(Integer.MAX_VALUE);
         bottomText.setStyle("-fx-background-color: #ADD8E6;-fx-padding: 30px;");
         return borderPane;
-    }
-
-    private static Label createLabel(String text) {
-        Label label = new Label(text);
-        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        return label;
     }
 
     public String getChoice() {
@@ -264,6 +283,8 @@ public class BoggleView {
         this.output = output;
     }
 
+
+    // creates buttons using a for loop and also clears any existing values in grid pane allowing board to refresh
     public void createButtons(String letters){
         this.gridPane.getChildren().clear();
         for (int i = 0; i < buttons.length; i++) {
@@ -278,6 +299,8 @@ public class BoggleView {
             });
         }
     }
+
+    //creates grid and assigns it to placement locations
     public void createGrid(Button[] buttons){
         gridPane.add(buttons[0], 0, 0, 1, 1);
         gridPane.add(buttons[1], 1, 0, 1, 1);
@@ -299,6 +322,8 @@ public class BoggleView {
         gridPane.setPadding(new Insets(10,10,10,10));
         borderPane.setCenter(gridPane);
     }
+
+    // Introduction text
     public void intro(Text texti){
         String intro = ("The Boggle board contains a grid of letters that are randomly placed." +
                 "We're both going to try to find words in this grid by joining the letters.\n" +
@@ -315,5 +340,42 @@ public class BoggleView {
                 if (speakerCheck){
                     speaker.speak(intro);
         }
+
+        }
+    //Hint instructions
+            public void hintInstructions(Text texi) {
+                String hintInstructions = ("Pressing the Hint button, allows you to recieve a Hint to help you find a " +
+                        "word in the board\n It costs 1 point though and you can only have one hint per , So use it wisely");
+                texi.setText(hintInstructions);
+                if (speakerCheck) {
+                    speaker.speak(hintInstructions);
+                }
+            }
+
+            //TimeRush instructions
+    public void TrInstructions(Text texti){
+        String TrInstructions = ("A timer has started, if you finish finding words in under 90 seconds you'll get triple the " +
+                "points\nIf you finish under 180 seconds you'll get double the points.\nIf you fail to finish under 180 seconds you'll only get base points ");
+        texti.setText(TrInstructions);
+        if (speakerCheck){
+            speaker.speak(TrInstructions);
+        }
+    }
+
+    // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe
+    public void Nightmode(){
+        if (nmIntiated) {
+            this.text.setFill(Paint.valueOf("#ceffc6"));
+            this.textBottom.setFill(Paint.valueOf("#ceffc6"));
+            this.borderPane.setStyle("-fx-background-color: #000000;");
+            this.bottomText.setStyle("-fx-background-color: #5A5A5A;");
+        }
+        else{
+            this.text.setFill(Color.BLACK);
+            this.textBottom.setFill(Color.BLACK);
+            this.borderPane.setStyle("-fx-background-color: #C4A484;");
+            this.bottomText.setStyle("-fx-background-color: #ADD8E6;");
+        }
+
     }
 }
