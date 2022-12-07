@@ -214,5 +214,4 @@ public class BoggleStats {
 
     public void setPlayerScoreTotal(float score) {this.pScoreTotal = (int) score;}
 
-
 }
