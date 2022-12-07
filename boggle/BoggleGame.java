@@ -489,5 +489,13 @@ public class BoggleGame {
     public void endRound(){
         gameStats.endRound();
     }
+    public boolean hintAllowed(){
+        return this.hintGet;
+    }
+    public String hintWord(){
+        hintGet = hint.getHint(allWords,hintGet);
+        return hint.getHintWord();
+    }
+
 //
 }

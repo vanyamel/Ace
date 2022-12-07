@@ -38,7 +38,7 @@ public class BoggleView {
         borderPane.setPadding(new Insets(10, 10, 10, 10));
 
         Button nightmode = new Button("NightMode");
-        Button hints = new Button("boggle.Hints");
+        Button hints = new Button("Hint");
         Button timeRush = new Button("Time Rush");
         Button surpriseMechanic = new Button("Surprise Mechanic");
         hints.setFont(new Font(14));
@@ -58,7 +58,14 @@ public class BoggleView {
         borderPane.setTop(controls);
         controls.setMaxWidth(990);
 
-
+        hints.setOnAction(e ->{
+            if(game.hintAllowed()){
+                text.setText("You already had an hint!");
+            }
+            else{
+                text.setText("Starts with "+game.hintWord().toLowerCase().charAt(0) + " and ends with "+game.hintWord().toLowerCase().charAt(game.hintWord().length()-1));
+            }
+        });
 
 
         Label scoreLabel = new Label("Player Score is: 0");
@@ -124,6 +131,7 @@ public class BoggleView {
                         text.wrappingWidthProperty();
                         this.game.endRound();
                         enter.setOnAction(f ->{if (input.getText().equals("Y")) {
+                            input.clear();
                             this.letters = game.initRound();
                             createBoard();
                         } else if (input.getText().equals("N")) {

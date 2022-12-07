@@ -7,6 +7,7 @@ import java.util.Random;
 public class Hints {
 
     BoggleStats gameStats;
+    private String hintWord;
 
     public Hints(BoggleStats gameStats){
         this.gameStats = gameStats;
@@ -18,7 +19,7 @@ public class Hints {
         if (!hintGet){
             Random r = new Random();
             Object[] hintWords = allWords.keySet().toArray();
-            String hintWord = (String) hintWords[r.nextInt(hintWords.length)];
+            hintWord = (String) hintWords[r.nextInt(hintWords.length)];
             System.out.println("starts with " + hintWord.toLowerCase().charAt(0) +
                     " and ends with " + hintWord.toLowerCase().charAt(hintWord.length()-1));
         }
@@ -36,5 +37,9 @@ public class Hints {
             gameStats.setpScoreTotal((int) a);
         }
     }
+    public String getHintWord(){
+        return this.hintWord;
+    }
+
 
 }
