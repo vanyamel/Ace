@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-<<<<<<< HEAD:out/production/Assignment1/Assignment1.iml
-=======
+<<<<<<<< HEAD:out/production/Assignment1/Assignment1.iml
+========
     <orderEntry type="library" name="freetts" level="project" />
     <orderEntry type="module-library">
       <library name="JUnit4">
@@ -20,7 +20,7 @@
         <SOURCES />
       </library>
     </orderEntry>
->>>>>>> main:Ace.iml
+>>>>>>>> main:Ace.iml
     <orderEntry type="module-library">
       <library name="JUnit5.8.1">
         <CLASSES>
@@ -37,9 +37,9 @@
         <SOURCES />
       </library>
     </orderEntry>
-<<<<<<< HEAD:out/production/Assignment1/Assignment1.iml
+<<<<<<<< HEAD:out/production/Assignment1/Assignment1.iml
     <orderEntry type="library" name="lib" level="project" />
-=======
->>>>>>> main:Ace.iml
+========
+>>>>>>>> main:Ace.iml
   </component>
 </module>
