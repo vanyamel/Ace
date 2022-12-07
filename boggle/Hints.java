@@ -25,6 +25,7 @@ public class Hints {
         else{
             System.out.println("you already got a hint");
         }
+
         return true;
 
     }
