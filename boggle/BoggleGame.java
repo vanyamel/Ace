@@ -1,7 +1,9 @@
 package boggle;
 
-import boggleViews.BoggleView;
-
+import boggle.surprise.BadBetException;
+import boggle.surprise.BetMode;
+import boggle.surprise.Bets;
+import boggle.tts.Speaker;
 import java.util.*;
 
 /**
@@ -18,7 +20,7 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
-    private  BoggleView view;
+    private TimeRush timeRush;
 
     private Dictionary boggleDict = new Dictionary("wordlist.txt");
     private String Letters;
@@ -43,6 +45,7 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
+        this.timeRush = new TimeRush();
     }
 
     /* 
@@ -68,6 +71,9 @@ public class BoggleGame {
      * It will loop until the user indicates they are done playing.
      */
     public void playGame(){
+        Speaker speaker = Speaker.getInstance();
+        speaker.speak("Welcome to Boggle!");
+
         int boardSize;
         while(true){
             System.out.println("Enter 1 to play on a big (5x5) grid; 2 to play on a small (4x4) one:");
@@ -127,6 +133,8 @@ public class BoggleGame {
         }
 
         //we are done with the game! So, summarize all the play that has transpired and exit.
+        System.out.println("you spent " + this.timeRush.getTimeInSeconds() + " minutes completing this game");
+        this.timeRush.scoreMultiplier(this.timeRush.getTimeInSeconds());
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
     }
@@ -142,7 +150,7 @@ public class BoggleGame {
         BoggleGrid grid = new BoggleGrid(size);
         grid.initalizeBoard(letters);
         //step 2. initialize the dictionary of legal words
-        //Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
+        Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
         //step 3. find all legal words on the board, given the dictionary and grid arrangement.
         Map<String, ArrayList<Position>> allWords = new HashMap<String, ArrayList<Position>>();
         findAllWords(allWords, boggleDict, grid);
@@ -167,7 +175,6 @@ public class BoggleGame {
 
         this.grid.initalizeBoard(letters);
 
-        //Dictionary boggleDict = new Dictionary("wordlist.txt");
         findAllWords(this.allWords, boggleDict, grid);
 
         return letters;
@@ -330,11 +337,22 @@ public class BoggleGame {
             //step 6. End when the player hits return (with no word choice).
             System.out.println(board.toString());
             String word = scanner.nextLine();
-            if (Objects.equals(word, "")){
+            if (word.equals("")){
                 break;
-            }
-            else if (allWords.containsKey(word.toUpperCase())){
+            } else if (word.equals("B")) {
+                System.out.println("Switching to betting mode! Please enter M[ultiplier] or C[hance] to select the mode!");
+                String mode = scanner.nextLine();
+
+                if (mode.equals("M") || mode.equals("Multiplier")) {
+                    handleBet(scanner, BetMode.MULTIPLIER);
+                } else if (mode.equals("C") || mode.equals("Chance")) {
+                    handleBet(scanner, BetMode.CHANCE);
+                } else {
+                    System.out.println("None of the modes were selected, returning to normal mode...");
+                }
+            } else if (allWords.containsKey(word.toUpperCase())){
                 System.out.println(word + " is a valid word");
+                Speaker.getInstance().speak(word);
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
             }

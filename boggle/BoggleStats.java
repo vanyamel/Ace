@@ -58,42 +58,6 @@ public class BoggleStats {
         }
     }
 
-    public int getpScore() {
-        return pScore;
-    }
-
-    public int getpScoreTotal() {
-        return pScoreTotal;
-    }
-
-    public int getcScore() {
-        return cScore;
-    }
-
-    public int getcScoreTotal() {
-        return this.cScoreTotal;
-    }
-
-    public int getpwordCount() {
-        return playerWords.size();
-    }
-    public int getcwordcount() {
-        return computerWords.size();
-    }
-
-    public double getApwordCount() {
-        return this.pAverageWords;
-    }
-    public double getAcwordcount() {
-        return this.cAverageWords;
-    }
-
-
-
-
-
-
-
     /* BoggleStats constructor
      * ----------------------
      * Sets round, totals and averages to 0.
@@ -135,6 +99,13 @@ public class BoggleStats {
                 this.cScore += score;
             }
         }
+    }
+    public int getPlayerScore() {
+        return this.pScore;
+    }
+
+    public void setPlayerScore(int score) {
+        this.pScore = score;
     }
 
     /* 
@@ -207,5 +178,36 @@ public class BoggleStats {
     public int getScore() {
         return this.pScore;
     }
+    public int getpScore() {
+        return pScore;
+    }
+
+    public int getpScoreTotal() {
+        return pScoreTotal;
+    }
+
+    public int getcScore() {
+        return cScore;
+    }
+
+    public int getcScoreTotal() {
+        return this.cScoreTotal;
+    }
+
+    public int getpwordCount() {
+        return playerWords.size();
+    }
+    public int getcwordcount() {
+        return computerWords.size();
+    }
+
+    public double getApwordCount() {
+        return this.pAverageWords;
+    }
+    public double getAcwordcount() {
+        return this.cAverageWords;
+    }
+
+
 
 }

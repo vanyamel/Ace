@@ -1,16 +1,10 @@
-import boggle.BoggleGame;
 import boggleViews.BoggleView;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import javafx.scene.control.Label;
+import boggle.BoggleGame;
+import boggle.tts.Speaker;
+
 
 /**
  * The Main class for the first Assignment in CSC207, Fall 2022
@@ -23,10 +17,12 @@ public class Main extends Application {
      **/
     public static void main(String[] args) {
         launch();
-//        BoggleGame b = new BoggleGame();
-//        b.playGame();
-        //b.giveInstructions();
-        //b.playGame();
+        Speaker speaker = Speaker.getInstance();
+        speaker.init();
+        BoggleGame b = new BoggleGame();
+        b.giveInstructions();
+        b.playGame();
+        speaker.deinit();
     }
 
     public void start(Stage stage) {
