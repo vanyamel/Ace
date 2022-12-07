@@ -15,7 +15,7 @@ public class Speaker {
     private Speaker() {
         System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
         this.voice = VoiceManager.getInstance().getVoice("kevin16");
-        this.enabled = true;
+        this.enabled = false;
     }
 
     public void init() {
