@@ -17,10 +17,13 @@ public class BoggleView {
    private BorderPane borderPane = new BorderPane();
     private GridPane gridPane = new GridPane();
     private String choice;
-
     private String output;
     private TextField input = new TextField();
+
+    private Text text = new Text();
     private String letters;
+
+    private boolean first_round = true;
 
     private Button[] buttons = new Button[16];
 
@@ -30,9 +33,7 @@ public class BoggleView {
 
 
     public BorderPane createBoard() {
-        //game = new BoggleGame();
 
-        //BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-background-color: #ffd0fe;");
         borderPane.setPadding(new Insets(10, 10, 10, 10));
 
@@ -73,28 +74,33 @@ public class BoggleView {
         wordCount.setFont(new Font(12));
         wordCount.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
+        Label pWordlabel = new Label("Computer Words Found: ");
+        pWordlabel.setFont(new Font(12));
+        pWordlabel.setAlignment(Pos.TOP_CENTER);
+        pWordlabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+        pWordlabel.setPrefHeight(Integer.MAX_VALUE); pWordlabel.setPrefWidth(Integer.MAX_VALUE);
 
-        Label wordLabel = new Label("Words Found: ");
-        wordLabel.setFont(new Font(12));
-        wordLabel.setAlignment(Pos.TOP_CENTER);
-        wordLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
-        wordLabel.setPrefHeight(Integer.MAX_VALUE); wordLabel.setPrefWidth(Integer.MAX_VALUE);
+
+        Label cWordlabel = new Label("Computer Words Found: ");
+        cWordlabel.setFont(new Font(12));
+        cWordlabel.setAlignment(Pos.TOP_CENTER);
+        cWordlabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
+        cWordlabel.setPrefHeight(Integer.MAX_VALUE); cWordlabel.setPrefWidth(Integer.MAX_VALUE);
 
 
-        VBox wordBox = new VBox(10, scoreLabel, cscoreLabel, wordCount, wordLabel);
+        VBox wordBox = new VBox(10, scoreLabel, cscoreLabel, wordCount,pWordlabel, cWordlabel);
         wordBox.setPadding(new Insets(10, 10, 10, 10));
         wordBox.setSpacing(30);
         wordBox.setAlignment(Pos.TOP_CENTER);
         wordBox.setPrefWidth(200);
         borderPane.setLeft(wordBox);
 
-            letters = game.initRound();
-            Text text = new Text();
+        letters = game.initRound();
+        Button enter = new Button("ENTER");
             output = "Enter a word ";
-            text.setText(output + "\n"); // make variable containing our text
+            text.setText(output + "\n");
             text.setFont(new Font(12));
             text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
-            Button enter = new Button("ENTER");
             VBox comms = new VBox(text, input, enter);
             comms.setPrefWidth(300);
             comms.setMaxWidth(300);
@@ -103,49 +109,52 @@ public class BoggleView {
             borderPane.setRight(comms);
             enter.setOnAction(e -> {
                 BoggleGame.MoveResult res = game.humanMoveOnce(input.getText());
+                input.clear();
 
                 switch (res) {
                     case EMPTY -> {
                         cscoreLabel.setText("Computer Score is: " + game.getcScore());
+                        cWordlabel.setText("Computer Words found:"+game.getComputerWords());
+                        cWordlabel.setWrapText(true);
+
                         text.setText(
                                 "Player found " + game.getpwordCount() + " words this round\nComputer found "
                                 + game.getcwordcount() + " words this round \nPlayer score is " + game.getpScore() +
                                 " this round \nComputer score is " + game.getcScore() + " this round\n\nPlay again? Type 'Y' or 'N' ");
                         text.wrappingWidthProperty();
+                        this.game.endRound();
                         enter.setOnAction(f ->{if (input.getText().equals("Y")) {
                             this.letters = game.initRound();
-//                            createButtons(this.letters);
-//                            createGrid(this.buttons);
                             createBoard();
                         } else if (input.getText().equals("N")) {
-                            text.setText("Good Game! \n\n"+game.getRound()+" rounds were played\nPlayer found "+
-                                    game.getpwordCount()+" words\nPlayer scored "+game.getpScoreTotal()+
-                                    " points\nComputer found " +game.getcwordcount()+" words\nComputer scored "
+                            text.setText("Good Game! \n\n"+game.getRound()+" rounds were played\nPlayer found average of "+
+                                    game.getApwordCount()+" words\nPlayer scored "+game.getpScoreTotal()+
+                                    " points\nComputer found " +game.getAcwordcount()+" words\nComputer scored "
                                     +game.getcScoreTotal()+ " points");
                         }
                         });
-                    }//iswrap for
+                    }
                     case BAD_WORD -> {
                         text.setText("Invalid word, or already used, try again!!");
                     }
                     case WORD_FOUND -> {
                         scoreLabel.setText("Player Score is: " + game.getpScore());
                         wordCount.setText("Number of words found: " + game.getpwordCount());
-                        wordLabel.setText("Words Found: " + game.getPlayerWords().toString());
-                        wordLabel.setWrapText(true);
+                        pWordlabel.setText("Player words found: " + game.getPlayerWords().toString());
+                        pWordlabel.setWrapText(true);
 
                     }
                 }
             });
 
-            createButtons(this.letters);
-            createGrid(this.buttons);
+
+                createButtons(this.letters);
+                createGrid(this.buttons);
+
 
             Label ScoreM = createLabel("Score Multiplier: ");
-            //bottom.setStyle("-fx-padding: 10px;");
             ScoreM.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
             Label Time = createLabel("Time: ");
-            //bottom.setStyle("-fx-padding: 10px;");
             Time.setStyle("-fx-background-color: #befaff;-fx-padding: 10px;");
 
             VBox timeRushBox = new VBox(10, Time, ScoreM);
@@ -158,7 +167,6 @@ public class BoggleView {
 
     private static Label createLabel(String text) {
         Label label = new Label(text);
-        label.setStyle("-fx-padding: 10px;");
         label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         return label;
     }
@@ -208,5 +216,18 @@ public class BoggleView {
         gridPane.add(buttons[15], 3, 3, 1, 1);
         gridPane.setAlignment(Pos.CENTER);
         borderPane.setCenter(gridPane);
+    }
+    public void intro(){
+        text.setText("The Boggle board contains a grid of letters that are randomly placed.\n" +
+        "We're both going to try to find words in this grid by joining the letters.\n" +
+        "You can form a word by connecting adjoining letters on the grid.\n" +
+        "Two letters adjoin if they are next to each other horizontally, \n" +
+        "vertically, or diagonally. The words you find must be at least 4 letters long,\n" +
+        "and you can't use a letter twice in any single word. Your points \n" +
+        "will be based on word length: a 4-letter word is worth 1 point, 5-letter\n" +
+        "words earn 2 points, and so on. After you find as many words as you can,\n" +
+        "I will find all the remaining words.\n" +
+        "Click on the letters so select them\n" +
+        "Hit enter when your ready");
     }
 }

@@ -20,6 +20,7 @@ public class BoggleGame {
 
     private  BoggleView view;
 
+    private Dictionary boggleDict = new Dictionary("wordlist.txt");
     private String Letters;
 
     /**
@@ -42,7 +43,6 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
-        //this.view = new BoggleView();
     }
 
     /* 
@@ -142,7 +142,7 @@ public class BoggleGame {
         BoggleGrid grid = new BoggleGrid(size);
         grid.initalizeBoard(letters);
         //step 2. initialize the dictionary of legal words
-        Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
+        //Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
         //step 3. find all legal words on the board, given the dictionary and grid arrangement.
         Map<String, ArrayList<Position>> allWords = new HashMap<String, ArrayList<Position>>();
         findAllWords(allWords, boggleDict, grid);
@@ -167,7 +167,7 @@ public class BoggleGame {
 
         this.grid.initalizeBoard(letters);
 
-        Dictionary boggleDict = new Dictionary("wordlist.txt");
+        //Dictionary boggleDict = new Dictionary("wordlist.txt");
         findAllWords(this.allWords, boggleDict, grid);
 
         return letters;
@@ -182,7 +182,6 @@ public class BoggleGame {
     public MoveResult humanMoveOnce(String word) {
         if (word.equals("")){
             computerMove(allWords);
-            //gameStats.endRound();
             return MoveResult.EMPTY;
         }
 
@@ -191,7 +190,6 @@ public class BoggleGame {
             allWords.remove(word.toUpperCase());
             return MoveResult.WORD_FOUND;
         }
-
         return MoveResult.BAD_WORD;
     }
 
@@ -390,6 +388,16 @@ public class BoggleGame {
     public int getcwordcount() {
         return gameStats.getcwordcount();
     }
+    public double getApwordCount() {
+        return gameStats.getApwordCount();
+    }
+    public double getAcwordcount() {
+        return gameStats.getAcwordcount();
+    }
     public int getRound(){return gameStats.getRound();}
+
+    public void endRound(){
+        gameStats.endRound();
+    }
 //
 }

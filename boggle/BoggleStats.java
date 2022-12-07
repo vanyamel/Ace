@@ -71,7 +71,7 @@ public class BoggleStats {
     }
 
     public int getcScoreTotal() {
-        return cScoreTotal;
+        return this.cScoreTotal;
     }
 
     public int getpwordCount() {
@@ -80,6 +80,15 @@ public class BoggleStats {
     public int getcwordcount() {
         return computerWords.size();
     }
+
+    public double getApwordCount() {
+        return this.pAverageWords;
+    }
+    public double getAcwordcount() {
+        return this.cAverageWords;
+    }
+
+
 
 
 
