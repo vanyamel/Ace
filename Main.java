@@ -16,12 +16,9 @@ public class Main extends Application {
      * @param args command line arguments.
      **/
     public static void main(String[] args) {
-        launch();
         Speaker speaker = Speaker.getInstance();
         speaker.init();
-        BoggleGame b = new BoggleGame();
-        b.giveInstructions();
-        b.playGame();
+        launch();
         speaker.deinit();
     }
 

@@ -47,6 +47,7 @@ public class BoggleView {
         this.speaker.init();
     }
 
+    Button nightmode;
 
     //This creates the board , it intilizes the letters of the board to button so it can be used to click and get the value of the button
     //to the textfield. This also puts all the letter buttons in a gridpane which creates a grid with the buttons. This is also creates a borderpane which everything sits on
@@ -60,11 +61,11 @@ public class BoggleView {
 
 
         // Creates feature buttons and formats the text with fonts, size and alignment
-        Button nightmode = new Button("NightMode");
+        this.nightmode = new Button("NightMode");
         Button hints = new Button("Hint");
         Button timeRush = new Button("Time Rush");
         Button surpriseMechanic = new Button("Surprise Mechanic");
-        Button tts = new Button("Text-to-Speech");
+        Button tts = new Button("Text-to-Speech: Off");
         hints.setFont(new Font(14));
         timeRush.setFont(new Font(14));
         surpriseMechanic.setFont(new Font(14));
@@ -86,7 +87,7 @@ public class BoggleView {
         controls.setMaxWidth(980);
 
         //Sets all feature buttons to an action to initiate the feature gameplay/mode
-        hints.setOnAction(e ->{
+        hints.setOnMouseReleased(e ->{
             if(!roundEnded) {
                 if (game.hintAllowed()) {
                     text.setText("You already had an hint!");
@@ -97,7 +98,7 @@ public class BoggleView {
             }
         });
 
-        timeRush.setOnAction(e ->{
+        timeRush.setOnMouseReleased(e ->{
             if(!roundEnded) {
                 this.startTime = System.currentTimeMillis();
                 this.Check = true;
@@ -106,7 +107,7 @@ public class BoggleView {
             }
         });
 
-        tts.setOnAction(e->{
+        tts.setOnMouseReleased(e->{
             if (this.speakerCheck){
                 this.speakerCheck = false;
                 tts.setText("Text-To-Speech: Off");
@@ -117,13 +118,10 @@ public class BoggleView {
             }
         });
 
-        nightmode.setOnAction(e ->{
-            if(nmIntiated == false){
-                this.nmIntiated = true;
-            } else if (this.nmIntiated == true) {
-                this.nmIntiated = false;
-            }
-            Nightmode();
+        nightmode.setOnMouseReleased(e ->{
+            this.nmIntiated = !this.nmIntiated;
+
+            switchAppearance(nmIntiated);
         });
 
 
@@ -179,7 +177,7 @@ public class BoggleView {
             comms.setAlignment(Pos.CENTER);
             comms.setPadding(new Insets(10,10,10,10));
             borderPane.setRight(comms);
-            enter.setOnAction(e -> {
+            enter.setOnMouseReleased(e -> {
                 //calls MoveResult in Boggle to play the game and see what player inputs is valid or not
                 BoggleGame.MoveResult res = game.humanMoveOnce(input.getText());
                 input.clear();
@@ -210,7 +208,7 @@ public class BoggleView {
                         // this ends the round so we can tally up the scores
                         this.game.endRound();
                         game.sethintAllowed();
-                        enter.setOnAction(f ->{if (input.getText().equals("Y")) {
+                        enter.setOnMouseReleased(f ->{if (input.getText().equals("Y")) {
                             input.clear();
                             this.letters = game.initRound();
                             createBoard();
@@ -363,18 +361,20 @@ public class BoggleView {
     }
 
     // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe
-    public void Nightmode(){
-        if (nmIntiated) {
+    public void switchAppearance(boolean dark){
+        if (dark) {
             this.text.setFill(Paint.valueOf("#ceffc6"));
             this.textBottom.setFill(Paint.valueOf("#ceffc6"));
             this.borderPane.setStyle("-fx-background-color: #000000;");
             this.bottomText.setStyle("-fx-background-color: #5A5A5A;");
+            this.nightmode.setText("LightMode");
         }
         else{
             this.text.setFill(Color.BLACK);
             this.textBottom.setFill(Color.BLACK);
             this.borderPane.setStyle("-fx-background-color: #C4A484;");
             this.bottomText.setStyle("-fx-background-color: #ADD8E6;");
+            this.nightmode.setText("NightMode");
         }
 
     }
