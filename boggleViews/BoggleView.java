@@ -38,7 +38,7 @@ public class BoggleView {
         borderPane.setPadding(new Insets(10, 10, 10, 10));
 
         Button nightmode = new Button("NightMode");
-        Button hints = new Button("Hints");
+        Button hints = new Button("boggle.Hints");
         Button timeRush = new Button("Time Rush");
         Button surpriseMechanic = new Button("Surprise Mechanic");
         hints.setFont(new Font(14));
