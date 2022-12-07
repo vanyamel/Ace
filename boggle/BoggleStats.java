@@ -185,6 +185,9 @@ public class BoggleStats {
     public int getpScoreTotal() {
         return pScoreTotal;
     }
+    public void setpScoreTotal(int num) {
+        this.pScoreTotal =  num;
+    }
 
     public int getcScore() {
         return cScore;

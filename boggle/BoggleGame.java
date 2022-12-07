@@ -19,7 +19,10 @@ public class BoggleGame {
      * stores game statistics
      */ 
     private BoggleStats gameStats;
+
     private Hints hint;
+    private boolean hintGet;
+
     private TimeRush TR;
 
     private Dictionary boggleDict = new Dictionary("wordlist.txt");
@@ -39,13 +42,12 @@ public class BoggleGame {
                     "BJKQXZ", "CCNSTW", "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DDHNOT", "DHHLOR",
                     "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU", "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
 
-
-    private boolean hintGet;
     /* 
      * BoggleGame constructor
      */
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
+        this.gameStats = new BoggleStats();
         this.TR = new TimeRush();
         this.hint = new Hints(this.gameStats);
     }
@@ -69,12 +71,12 @@ public class BoggleGame {
 
     public void scoreMultiplier(float time){
         if(time <= 90){
-            int a = this.gameStats.getScoreTotal() *3;
-            this.gameStats.setPlayerScoreTotal(a);
+            int a = this.gameStats.getpScore() *3;
+            this.gameStats.setPlayerScore(a);
         }
         else if(time <= 180){
-            int b = this.gameStats.getScoreTotal() *2;
-            this.gameStats.setPlayerScoreTotal(b);
+            int b = this.gameStats.getpScore() *2;
+            this.gameStats.setPlayerScore(b);
         }
     }
     /* 
@@ -142,13 +144,13 @@ public class BoggleGame {
             if(choiceRepeat == "" || choiceRepeat.equals("N")) break; //end game if user inputs nothing
 
         }
+
         //we are done with the game! So, summarize all the play that has transpired and exit.
         System.out.println("you spent " + TR.printTime() + " seconds completing this game");
         scoreMultiplier(TR.getTimeInSeconds());
         hint.deductScore(hintGet);
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
-
     }
 
     /* 
@@ -162,7 +164,7 @@ public class BoggleGame {
         BoggleGrid grid = new BoggleGrid(size);
         grid.initalizeBoard(letters);
         //step 2. initialize the dictionary of legal words
-        Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
+        //Dictionary boggleDict = new Dictionary("wordlist.txt"); //you may have to change the path to the wordlist, depending on where you place it.
         //step 3. find all legal words on the board, given the dictionary and grid arrangement.
         Map<String, ArrayList<Position>> allWords = new HashMap<String, ArrayList<Position>>();
         findAllWords(allWords, boggleDict, grid);
@@ -421,7 +423,6 @@ public class BoggleGame {
                 }
             } else if (Objects.equals(word, "1")) {
                 hintGet = hint.getHint(allWords, hintGet);
-            } else if (allWords.containsKey(word.toUpperCase())) {
                 System.out.println(word + " is a valid word");
                 System.out.println("Timer:" + TR.printTime());
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
@@ -488,5 +489,19 @@ public class BoggleGame {
     public void endRound(){
         gameStats.endRound();
     }
+    public boolean hintAllowed(){
+        return this.hintGet;
+    }
+    public void sethintAllowed(){
+        this.hintGet = false;
+    }
+    public String hintWord(){
+        hintGet = hint.getHint(allWords,hintGet);
+        return hint.getHintWord();
+    }
+    public float getTimeInSeconds(long starttime) {
+        return Math.round((System.currentTimeMillis() - starttime) / 1000f);
+    }
+
 //
 }
