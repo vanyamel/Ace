@@ -1,31 +1,20 @@
 package boggle;
+import java.util.*;
 
 public class TimeRush {
-    private long startTime;
+    private final long startTime;
 
-    private BoggleStats gameStats;
-
-    public void start() {
-        startTime = System.currentTimeMillis();
+    public TimeRush() {
+        this.startTime = System.currentTimeMillis();
     }
 
     public float getTimeInSeconds() {
-
-        return (System.currentTimeMillis() - startTime) / 1000f;
+        return Math.round((System.currentTimeMillis() - startTime) / 1000f);
     }
 
-    public void scoreMultiplier(float time){
-        System.out.println("points*2 if time spent is less than 2 minutes");
-        System.out.println("points*1.5 if time spent is less than 3 minutes");
-        System.out.println("points*1.2 if time spent is less than 5 minutes");
-        if(time <= 120){
-            gameStats.setPlayerScore(gameStats.getScore()*2);
-        }
-        else if(time <= 180){
-            gameStats.setPlayerScore((int) (gameStats.getScore()*1.5));
-        }
-        else if(time <= 300){
-            gameStats.setPlayerScore((int) (gameStats.getScore()*1.2));
-        }
+    public String printTime(){
+        int minutes = (int) ((this.getTimeInSeconds() % 3600) / 60);
+        int seconds = (int) (this.getTimeInSeconds() % 60);
+        return String.format(minutes +" minutes and "+seconds+ " seconds");
     }
 }
