@@ -65,7 +65,7 @@ public class BoggleStats {
      */
     public BoggleStats() {
         this.round = 0;
-        this.pScore = 0;
+        this.pScore = 100;
         this.cScore = 0;
         this.pScoreTotal = 0;
         this.cScoreTotal = 0;

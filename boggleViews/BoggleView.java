@@ -1,6 +1,13 @@
 package boggleViews;
 
 import boggle.BoggleGame;
+import boggle.surprise.BadBetException;
+import boggle.surprise.BetMode;
+import boggle.surprise.Bets;
+import boggleViews.themes.LightTheme;
+import boggleViews.themes.NightTheme;
+import boggleViews.themes.Theme;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
@@ -41,6 +48,10 @@ public class BoggleView {
 
     private Speaker speaker;
 
+    private Theme theme;
+
+    private boolean betsVisible = false;
+
     public BoggleView() {
         this.speaker = Speaker.getInstance();
         this.game = new BoggleGame();
@@ -64,7 +75,7 @@ public class BoggleView {
         Button hints = new Button("Hint");
         Button timeRush = new Button("Time Rush");
         Button surpriseMechanic = new Button("Surprise Mechanic");
-        Button tts = new Button("Text-to-Speech: Off");
+        Button tts = new Button("Text-To-Speech: Off");
         hints.setFont(new Font(14));
         timeRush.setFont(new Font(14));
         surpriseMechanic.setFont(new Font(14));
@@ -111,9 +122,9 @@ public class BoggleView {
             this.speaker.enabled = !this.speaker.enabled;
 
             if (speaker.enabled) {
-                tts.setText("Text-To-Speech: Off");
-            } else {
                 tts.setText("Text-To-Speech: On");
+            } else {
+                tts.setText("Text-To-Speech: Off");
             }
         });
 
@@ -125,12 +136,12 @@ public class BoggleView {
 
 
         // creates and formats labels to Hold and display Scores and words found
-        Label scoreLabel = new Label("Player Score is: 0");
+        Label scoreLabel = new Label("Player Score is: " + game.getpScore());
         scoreLabel.setFont(new Font(12));
         scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
 
-        Label cscoreLabel = new Label("Computer Score is: 0");
+        Label cscoreLabel = new Label("Computer Score is: " + game.getcScore());
         cscoreLabel.setFont(new Font(12));
         cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
@@ -171,7 +182,85 @@ public class BoggleView {
         text.setText(output + "\n");
         text.setFont(new Font(12));
         text.setStyle("-fx-background-color: #ceffc6;-fx-padding: 50px;");
-        VBox comms = new VBox(text, input, enter);
+
+        String[] betModes = new String[]{BetMode.CHANCE.toString(), BetMode.MULTIPLIER.toString()};
+
+        ComboBox selectBetMode = new ComboBox(FXCollections.observableArrayList(betModes));
+        TextField betInput = new TextField();
+        betInput.setPromptText("Please enter chance from 0 to 1...");
+
+        selectBetMode.setOnAction(e -> {
+            switch(BetMode.fromString((String)selectBetMode.getValue())) {
+                case CHANCE: betInput.setPromptText("Please enter chance from 0 to 1..."); break;
+                case MULTIPLIER: betInput.setPromptText("Please enter your bet amount..."); break;
+            }
+        });
+
+        selectBetMode.setValue(BetMode.CHANCE.toString());
+
+        Button betConfirm = new Button("Try your luck!");
+
+        betConfirm.setOnMouseReleased(e -> {
+            switch(BetMode.fromString((String)selectBetMode.getValue())) {
+                case CHANCE:
+                    if (game.getpScore() < 10) {
+                        text.setText("You score is lower than the minimum amount for the chance bet (10)!");
+                        return; // cant bet on chance if you have < 10 points
+                    }
+
+                    try {
+                        double chance = Double.parseDouble(betInput.getText());
+                        boolean won = Bets.chance(chance);
+                        game.setpScore(Math.max(0, game.getpScore() - 10));
+                        if (won) {
+                            text.setText("You won!");
+                            game.setpScore(game.getpScore() + (int)(1/chance) * 10);
+                        } else {
+                            text.setText("You lost.");
+                        }
+                    } catch (NumberFormatException | BadBetException exc) {
+                        betInput.setText("");
+                        text.setText("Bad input!");
+                    }
+
+                    break;
+                case MULTIPLIER:
+                    try {
+                        int amount = Integer.parseInt(betInput.getText());
+
+                        if (amount > game.getpScore()) {
+                            text.setText("You score is lower than the bet amount!");
+                            return;
+                        }
+
+                        game.setpScore(game.getpScore() - amount);
+                        int new_amount = Bets.multiplier(amount);
+                        game.setpScore(game.getpScore() + new_amount);
+                        text.setText("You won: " + new_amount + " points.");
+                    } catch (NumberFormatException | BadBetException exc) {
+                        betInput.setText("");
+                        text.setText("Bad input!");
+                    }
+
+                    break;
+            }
+
+            scoreLabel.setText("Player Score is: " + game.getpScore());
+        });
+
+        surpriseMechanic.setOnMouseReleased(e -> {
+            betsVisible = !betsVisible;
+
+            selectBetMode.setVisible(betsVisible);
+            betInput.setVisible(betsVisible);
+            betConfirm.setVisible(betsVisible);
+        });
+
+        selectBetMode.setVisible(false);
+        betInput.setVisible(false);
+        betConfirm.setVisible(false);
+
+        VBox comms = new VBox(selectBetMode, betInput, betConfirm, text, input, enter);
         comms.setPrefWidth(300);
         comms.setMaxWidth(280);
         text.maxWidth(300);
@@ -355,18 +444,11 @@ public class BoggleView {
     // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe
     public void switchAppearance(boolean dark) {
         if (dark) {
-            this.text.setFill(Paint.valueOf("#ceffc6"));
-            this.textBottom.setFill(Paint.valueOf("#ceffc6"));
-            this.borderPane.setStyle("-fx-background-color: #000000;");
-            this.bottomText.setStyle("-fx-background-color: #5A5A5A;");
-            this.nightmode.setText("LightMode");
+            theme = new NightTheme();
         } else {
-            this.text.setFill(Color.BLACK);
-            this.textBottom.setFill(Color.BLACK);
-            this.borderPane.setStyle("-fx-background-color: #C4A484;");
-            this.bottomText.setStyle("-fx-background-color: #ADD8E6;");
-            this.nightmode.setText("NightMode");
+            theme = new LightTheme();
         }
 
+        theme.apply(this.text, this.textBottom, this.borderPane, this.bottomText, this.nightmode);
     }
 }
