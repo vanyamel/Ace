@@ -20,7 +20,8 @@ public class BoggleGame {
      */ 
     private BoggleStats gameStats;
 
-    private TimeRush timeRush;
+    private Hints hint;
+    private TimeRush TR;
 
     private Dictionary boggleDict = new Dictionary("wordlist.txt");
     private String Letters;
@@ -39,13 +40,15 @@ public class BoggleGame {
                     "BJKQXZ", "CCNSTW", "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DDHNOT", "DHHLOR",
                     "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU", "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
 
+
+    private boolean hintGet;
     /* 
      * BoggleGame constructor
      */
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
-        this.gameStats = new BoggleStats();
-        this.timeRush = new TimeRush();
+        this.TR = new TimeRush();
+        this.hint = new Hints(this.gameStats);
     }
 
     /* 
@@ -64,6 +67,20 @@ public class BoggleGame {
         System.out.println("I will find all the remaining words.");
         System.out.println("\nHit return when you're ready...");
     }
+
+
+
+    public void scoreMultiplier(float time){
+        if(time <= 90){
+            int a = this.gameStats.getScoreTotal() *3;
+            this.gameStats.setPlayerScoreTotal(a);
+        }
+        else if(time <= 180){
+            int b = this.gameStats.getScoreTotal() *2;
+            this.gameStats.setPlayerScoreTotal(b);
+        }
+    }
+
 
 
     /* 
@@ -132,9 +149,9 @@ public class BoggleGame {
 
         }
 
-        //we are done with the game! So, summarize all the play that has transpired and exit.
-        System.out.println("you spent " + this.timeRush.getTimeInSeconds() + " minutes completing this game");
-        this.timeRush.scoreMultiplier(this.timeRush.getTimeInSeconds());
+        System.out.println("you spent " + TR.printTime() + " seconds completing this game");
+        scoreMultiplier(TR.getTimeInSeconds());
+        hint.deductScore(hintGet);
         this.gameStats.summarizeGame();
         System.out.println("Thanks for playing!");
     }
@@ -393,6 +410,7 @@ public class BoggleGame {
             //step 5. Repeat step 1 - 4
             //step 6. End when the player hits return (with no word choice).
             System.out.println(board.toString());
+            System.out.println("press 1 for hints, a random word will be given");
             String word = scanner.nextLine();
             if (word.equals("")){
                 break;
@@ -404,21 +422,23 @@ public class BoggleGame {
                     handleBet(scanner, BetMode.MULTIPLIER);
                 } else if (mode.equals("C") || mode.equals("Chance")) {
                     handleBet(scanner, BetMode.CHANCE);
-                } else {
+                }
+                else {
                     System.out.println("None of the modes were selected, returning to normal mode...");
                 }
-            } else if (allWords.containsKey(word.toUpperCase())){
+            } else if (Objects.equals(word, "1")) {
+                hintGet = hint.getHint(allWords, hintGet);
+            } else if (allWords.containsKey(word.toUpperCase())) {
                 System.out.println(word + " is a valid word");
-                Speaker.getInstance().speak(word);
+                System.out.println("Timer:" + TR.printTime());
                 this.gameStats.addWord(word, BoggleStats.Player.Human);
                 allWords.remove(word.toUpperCase());
-            }
-            else {
+            } else {
                 System.out.println("not a valid word or is already used");
+                System.out.println("Timer:" + TR.printTime());
             }
         }
     }
-
 
     /* 
      * Gets words from the computer.  The computer should find words that are
