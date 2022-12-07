@@ -1,7 +1,7 @@
 package boggle;
 import java.util.*;
 
-public class TimeRush {
+public class giTimeRush {
     private final long startTime;
 
     public TimeRush() {
