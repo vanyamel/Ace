@@ -106,6 +106,7 @@ public class BoggleView {
             } else {
                 hintInstructions(textBottom);
                 text.setText("Starts with " + game.hintWord().toLowerCase().charAt(0) + " and ends with " + game.hintWord().toLowerCase().charAt(game.hintWord().length() - 1));
+                game.setpScore(game.getpScore() -1);
             }
         });
 
@@ -114,7 +115,7 @@ public class BoggleView {
                 this.startTime = System.currentTimeMillis();
                 this.Check = true;
                 TrInstructions(textBottom);
-                text.setText("You Initiated Time Rush!!\n BE QUICK FOR MORE POINTS!!");
+                text.setText("You Initiated Time Rush!!\nBE QUICK FOR MORE POINTS!!");
             }
         });
 
@@ -136,12 +137,12 @@ public class BoggleView {
 
 
         // creates and formats labels to Hold and display Scores and words found
-        Label scoreLabel = new Label("Player Score is: " + game.getpScore());
+        Label scoreLabel = new Label("Player Score is: "+game.getpScore() );
         scoreLabel.setFont(new Font(12));
         scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
 
-        Label cscoreLabel = new Label("Computer Score is: " + game.getcScore());
+        Label cscoreLabel = new Label("Computer Score is: " );
         cscoreLabel.setFont(new Font(12));
         cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
@@ -249,11 +250,14 @@ public class BoggleView {
         });
 
         surpriseMechanic.setOnMouseReleased(e -> {
-            betsVisible = !betsVisible;
+            if (!roundEnded) {
+                SmInstructions(textBottom);
+                betsVisible = !betsVisible;
 
-            selectBetMode.setVisible(betsVisible);
-            betInput.setVisible(betsVisible);
-            betConfirm.setVisible(betsVisible);
+                selectBetMode.setVisible(betsVisible);
+                betInput.setVisible(betsVisible);
+                betConfirm.setVisible(betsVisible);
+            }
         });
 
         selectBetMode.setVisible(false);
@@ -427,7 +431,7 @@ public class BoggleView {
     //Hint instructions
     public void hintInstructions(Text texi) {
         String hintInstructions = ("Pressing the Hint button, allows you to recieve a Hint to help you find a " +
-                "word in the board\n It costs 1 point though and you can only have one hint per , So use it wisely");
+                "word in the board\nYou can only have one hint per , So use it wisely");
         texi.setText(hintInstructions);
         speaker.speak(hintInstructions);
     }
@@ -435,10 +439,18 @@ public class BoggleView {
     //TimeRush instructions
     public void TrInstructions(Text texti) {
         String TrInstructions = ("A timer has started, if you finish finding words in under 90 seconds you'll get triple the " +
-                "points\nIf you finish under 180 seconds you'll get double the points.\nIf you fail to finish under 180 seconds you'll only get base points ");
+                "points\nIf you finish under 180 seconds you'll get double the points.\nIf you fail to " +
+                "finish under 180 seconds you'll only get base points \nEnter your words quickly!");
         texti.setText(TrInstructions);
 
         speaker.speak(TrInstructions);
+    }
+
+    public void SmInstructions(Text texti){
+        String SmInstructions = ("Feeling Lucky?\nPlay Multiplier, give some points lets see if they grow or shrink." +
+                "\nPlay Chance, pay 10 points and see if you gain much more or lose it all");
+        texti.setText(SmInstructions);
+        speaker.speak(SmInstructions);
     }
 
     // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe

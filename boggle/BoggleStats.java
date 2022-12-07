@@ -65,7 +65,7 @@ public class BoggleStats {
      */
     public BoggleStats() {
         this.round = 0;
-        this.pScore = 100;
+        this.pScore = 5;
         this.cScore = 0;
         this.pScoreTotal = 0;
         this.cScoreTotal = 0;
@@ -126,40 +126,8 @@ public class BoggleStats {
         this.cScore = 0;
         this.round += 1;
     }
-//
-    /* 
-     * Summarize one round of boggle.  Print out:
-     * The words each player found this round.
-     * Each number of words each player found this round.
-     * Each player's score this round.
-     */
-    public void summarizeRound() {
-        System.out.println("player found the words " + getPlayerWords() + " this round");
-        System.out.println("computer found the words " + this.computerWords + " this round");
-        System.out.println("player found " + getPlayerWords().size() + " words this round");
-        System.out.println("computer found " + this.computerWords.size() + " words this round");
-        System.out.println("player score is " + getScore() + " this round");
-        System.out.println("computer score is " + this.cScore + " this round");
-    }
 
-    /* 
-     * Summarize the entire boggle game.  Print out:
-     * The total number of rounds played.
-     * The total score for either player.
-     * The average number of words found by each player per round.
-     */
-    public void summarizeGame() {
-        if (getRound() == 0){
-            return;
-        }
-        System.out.println(getRound() + " rounds were played");
-        System.out.println("the total score for player is " + this.pScoreTotal);
-        System.out.println("the total score for computer is " + this.cScoreTotal);
-        System.out.println("the average number of words found by player is " + this.pAverageWords);
-        System.out.println("the average number of words found by computer is " + this.cAverageWords);
-    }
-
-    /* 
+    /*
      * @return Set<String> The player's word list
      */
     public Set<String> getPlayerWords() {
@@ -185,9 +153,6 @@ public class BoggleStats {
     public int getpScoreTotal() {
         return pScoreTotal;
     }
-    public void setpScoreTotal(int num) {
-        this.pScoreTotal =  num;
-    }
 
     public int getcScore() {
         return cScore;
@@ -210,11 +175,5 @@ public class BoggleStats {
     public double getAcwordcount() {
         return this.cAverageWords;
     }
-
-    public int getScoreTotal() {
-        return this.pScoreTotal;
-    }
-
-    public void setPlayerScoreTotal(float score) {this.pScoreTotal = (int) score;}
 
 }

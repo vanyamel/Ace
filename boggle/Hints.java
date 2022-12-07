@@ -20,21 +20,11 @@ public class Hints {
             Random r = new Random();
             Object[] hintWords = allWords.keySet().toArray();
             hintWord = (String) hintWords[r.nextInt(hintWords.length)];
-            // System.out.println("starts with " + hintWord.toLowerCase().charAt(0) +
-            //        " and ends with " + hintWord.toLowerCase().charAt(hintWord.length()-1));
         } else {
-            // System.out.println("you already got a hint");
         }
 
         return true;
 
-    }
-
-    public void deductScore(boolean hintGet) {
-        if (!hintGet) {
-            float a = (float) (gameStats.getpScoreTotal() - 1);
-            gameStats.setpScoreTotal((int) a);
-        }
     }
 
     public String getHintWord() {
