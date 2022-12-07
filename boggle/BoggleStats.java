@@ -208,6 +208,10 @@ public class BoggleStats {
         return this.cAverageWords;
     }
 
+    public int getScoreTotal() {
+        return this.pScoreTotal;
+    }
 
+    public void setPlayerScoreTotal(float score) {this.pScoreTotal = (int) score;}
 
 }
