@@ -1,4 +1,4 @@
-/shelf/
-/.idea/workspace.xml
-/.idea
-/out
+shelf/
+.idea/
+out/
+*.iml
