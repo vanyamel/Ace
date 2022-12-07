@@ -16,7 +16,6 @@ public class Hints {
     public boolean getHint(Map<String, ArrayList<Position>> allWords, boolean hintGet){
 
         if (!hintGet){
-
             Random r = new Random();
             Object[] hintWords = allWords.keySet().toArray();
             String hintWord = (String) hintWords[r.nextInt(hintWords.length)];
