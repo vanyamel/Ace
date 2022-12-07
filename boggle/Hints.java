@@ -33,7 +33,7 @@ public class Hints {
 
     public void deductScore(boolean hintGet){
         if (!hintGet){
-            float a = (float) (gameStats.getpScoreTotal()*0.9);
+            float a = (float) (gameStats.getpScoreTotal()-1);
             gameStats.setpScoreTotal((int) a);
         }
     }
