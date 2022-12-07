@@ -13,10 +13,8 @@ public class TimeRush {
     }
 
     public String printTime(){
-
         int minutes = (int) ((this.getTimeInSeconds() % 3600) / 60);
         int seconds = (int) (this.getTimeInSeconds() % 60);
-        return String.format(minutes+":"+seconds);
-
+        return String.format(minutes +" minutes and "+seconds+ " seconds");
     }
 }

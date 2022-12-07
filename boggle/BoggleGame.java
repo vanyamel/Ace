@@ -140,7 +140,6 @@ public class BoggleGame {
             if(choiceRepeat == "" || choiceRepeat.equals("N")) break; //end game if user inputs nothing
 
         }
-
         //we are done with the game! So, summarize all the play that has transpired and exit.
         System.out.println("you spent " + TR.printTime() + " seconds completing this game");
         scoreMultiplier(TR.getTimeInSeconds());
