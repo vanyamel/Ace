@@ -106,7 +106,6 @@ public class BoggleView {
             } else {
                 hintInstructions(textBottom);
                 text.setText("Starts with " + game.hintWord().toLowerCase().charAt(0) + " and ends with " + game.hintWord().toLowerCase().charAt(game.hintWord().length() - 1));
-                game.setpScore(game.getpScore() -1);
             }
         });
 
@@ -150,7 +149,7 @@ public class BoggleView {
         wordCount.setFont(new Font(12));
         wordCount.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
-        Label pWordlabel = new Label("Computer Words Found: ");
+        Label pWordlabel = new Label("Player Words Found: ");
         pWordlabel.setFont(new Font(12));
         pWordlabel.setAlignment(Pos.TOP_CENTER);
         pWordlabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
