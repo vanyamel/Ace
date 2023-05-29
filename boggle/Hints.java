@@ -20,7 +20,6 @@ public class Hints {
             Random r = new Random();
             Object[] hintWords = allWords.keySet().toArray();
             hintWord = (String) hintWords[r.nextInt(hintWords.length)];
-        } else {
         }
 
         return true;

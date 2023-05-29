@@ -1,9 +1,6 @@
 package boggle;
 
-import java.lang.reflect.Array;
-
 /**
- * The BoggleGrid class for the first Assignment in CSC207, Fall 2022
  * The BoggleGrid represents the grid on which we play Boggle
  */
 public class BoggleGrid {

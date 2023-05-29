@@ -7,20 +7,19 @@ public enum BetMode {
 
     @Override
     public String toString() {
-        switch(this) {
-            case MULTIPLIER: return "Multiplier";
-            case CHANCE: return "Chance";
-        }
+        return switch (this) {
+            case MULTIPLIER -> "Multiplier";
+            case CHANCE -> "Chance";
+        };
 
-        return "?";
     }
 
     public static BetMode fromString(String str) {
-        switch(str) {
-            case "Multiplier": return MULTIPLIER;
-            case "Chance": return CHANCE;
-        }
+        return switch (str) {
+            case "Multiplier" -> MULTIPLIER;
+            case "Chance" -> CHANCE;
+            default -> null;
+        };
 
-        return null;
     }
 }

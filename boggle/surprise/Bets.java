@@ -14,15 +14,29 @@ public class Bets {
         Multiplier result = Multiplier.values()[value];
 
         switch (result) {
-            case POINT_ONE: return (int) (points * 0.1);
-            case POINT_TWO: return (int) (points * 0.2);
-            case POINT_FIVE: return (int) (points * 0.5);
-            case ONE: return points;
-            case TWO: return points * 2;
-            case TWO_POINT_FIVE: return (int) (points * 2.5);
-            case TEN: return points * 10;
-
-            default: break;
+            case POINT_ONE -> {
+                return (int) (points * 0.1);
+            }
+            case POINT_TWO -> {
+                return (int) (points * 0.2);
+            }
+            case POINT_FIVE -> {
+                return (int) (points * 0.5);
+            }
+            case ONE -> {
+                return points;
+            }
+            case TWO -> {
+                return points * 2;
+            }
+            case TWO_POINT_FIVE -> {
+                return (int) (points * 2.5);
+            }
+            case TEN -> {
+                return points * 10;
+            }
+            default -> {
+            }
         }
 
         throw new BadBetException("Invalid multiplier generated");

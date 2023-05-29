@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The BoggleStats class for the first Assignment in CSC207, Fall 2022
  * The BoggleStats will contain statsitics related to game play Boggle 
  */
 public class BoggleStats {
@@ -12,11 +11,11 @@ public class BoggleStats {
     /**
      * set of words the player finds in a given round 
      */  
-    private Set<String> playerWords = new HashSet<String>();  
+    private Set<String> playerWords;
     /**
      * set of words the computer finds in a given round 
      */  
-    private Set<String> computerWords = new HashSet<String>();  
+    private Set<String> computerWords;
     /**
      * the player's score for the current round
      */  
@@ -50,11 +49,10 @@ public class BoggleStats {
      * enumarable types of players (human or computer)
      */  
     public enum Player {
-        Human("Human"),
-        Computer("Computer");
-        private final String player;
-        Player(final String player) {
-            this.player = player;
+        Human(),
+        Computer();
+
+        Player() {
         }
     }
 
@@ -86,7 +84,7 @@ public class BoggleStats {
         int score = 0;
         for (int i = 1; i <= word.length(); i++){
             if (i >= 4){
-                score += 1;
+                score += 10;
             }
         }
         switch (player) {
@@ -99,9 +97,6 @@ public class BoggleStats {
                 this.cScore += score;
             }
         }
-    }
-    public int getPlayerScore() {
-        return this.pScore;
     }
 
     public void setPlayerScore(int score) {

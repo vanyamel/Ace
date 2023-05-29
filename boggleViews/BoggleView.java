@@ -4,38 +4,44 @@ import boggle.BoggleGame;
 import boggle.surprise.BadBetException;
 import boggle.surprise.BetMode;
 import boggle.surprise.Bets;
+import boggle.tts.Speaker;
 import boggleViews.themes.LightTheme;
 import boggleViews.themes.NightTheme;
 import boggleViews.themes.Theme;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.*;
-import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import boggle.tts.Speaker;
+
+import java.util.Objects;
 
 
 public class BoggleView {
-    private BoggleGame game;
+    private final BoggleGame game;
 
     private boolean nmIntiated = false;
     private HBox bottomText = new HBox();
-    private BorderPane borderPane = new BorderPane();
-    private GridPane gridPane = new GridPane();
+    private final BorderPane borderPane = new BorderPane();
+    private final GridPane gridPane = new GridPane();
     private String choice;
     private String output;
 
     private long startTime;
     private String timerush = "";
-    private TextField input = new TextField();
+    private final TextField input = new TextField();
 
-    private Text text = new Text();
+    private final Text text = new Text();
 
-    private Text textBottom = new Text();
+    private final Text textBottom = new Text();
     private String letters;
 
     //this boolean checks makes sure User cant call hints or timerush after the round ends
@@ -44,11 +50,9 @@ public class BoggleView {
 
     private boolean first_round = true;
 
-    private Button[] buttons = new Button[16];
+    private final Button[] buttons = new Button[16];
 
-    private Speaker speaker;
-
-    private Theme theme;
+    private final Speaker speaker;
 
     private boolean betsVisible = false;
 
@@ -185,14 +189,14 @@ public class BoggleView {
 
         String[] betModes = new String[]{BetMode.CHANCE.toString(), BetMode.MULTIPLIER.toString()};
 
-        ComboBox selectBetMode = new ComboBox(FXCollections.observableArrayList(betModes));
+        ComboBox<String> selectBetMode = new ComboBox<>(FXCollections.observableArrayList(betModes));
         TextField betInput = new TextField();
         betInput.setPromptText("Please enter chance from 0 to 1...");
 
         selectBetMode.setOnAction(e -> {
-            switch(BetMode.fromString((String)selectBetMode.getValue())) {
-                case CHANCE: betInput.setPromptText("Please enter chance from 0 to 1..."); break;
-                case MULTIPLIER: betInput.setPromptText("Please enter your bet amount..."); break;
+            switch (Objects.requireNonNull(BetMode.fromString(selectBetMode.getValue()))) {
+                case CHANCE -> betInput.setPromptText("Please enter chance from 0 to 1...");
+                case MULTIPLIER -> betInput.setPromptText("Please enter your bet amount...");
             }
         });
 
@@ -201,20 +205,19 @@ public class BoggleView {
         Button betConfirm = new Button("Try your luck!");
 
         betConfirm.setOnMouseReleased(e -> {
-            switch(BetMode.fromString((String)selectBetMode.getValue())) {
-                case CHANCE:
+            switch (Objects.requireNonNull(BetMode.fromString(selectBetMode.getValue()))) {
+                case CHANCE -> {
                     if (game.getpScore() < 10) {
                         text.setText("You score is lower than the minimum amount for the chance bet (10)!");
                         return; // cant bet on chance if you have < 10 points
                     }
-
                     try {
                         double chance = Double.parseDouble(betInput.getText());
                         boolean won = Bets.chance(chance);
                         game.setpScore(Math.max(0, game.getpScore() - 10));
                         if (won) {
                             text.setText("You won!");
-                            game.setpScore(game.getpScore() + (int)(1/chance) * 10);
+                            game.setpScore(game.getpScore() + (int) (1 / chance) * 10);
                         } else {
                             text.setText("You lost.");
                         }
@@ -222,9 +225,8 @@ public class BoggleView {
                         betInput.setText("");
                         text.setText("Bad input!");
                     }
-
-                    break;
-                case MULTIPLIER:
+                }
+                case MULTIPLIER -> {
                     try {
                         int amount = Integer.parseInt(betInput.getText());
 
@@ -236,13 +238,12 @@ public class BoggleView {
                         game.setpScore(game.getpScore() - amount);
                         int new_amount = Bets.multiplier(amount);
                         game.setpScore(game.getpScore() + new_amount);
-                        text.setText("You won: " + new_amount + " points.");
+                        text.setText("You won or lost : " + new_amount + " points.");
                     } catch (NumberFormatException | BadBetException exc) {
                         betInput.setText("");
                         text.setText("Bad input!");
                     }
-
-                    break;
+                }
             }
 
             scoreLabel.setText("Player Score is: " + game.getpScore());
@@ -437,23 +438,28 @@ public class BoggleView {
 
     //TimeRush instructions
     public void TrInstructions(Text texti) {
-        String TrInstructions = ("A timer has started, if you finish finding words in under 90 seconds you'll get triple the " +
-                "points\nIf you finish under 180 seconds you'll get double the points.\nIf you fail to " +
-                "finish under 180 seconds you'll only get base points \nEnter your words quickly!");
+        String TrInstructions = ("""
+                A timer has started, if you finish finding words in under 90 seconds you'll get triple the points
+                If you finish under 180 seconds you'll get double the points.
+                If you fail to finish under 180 seconds you'll only get base points\s
+                Enter your words quickly!""");
         texti.setText(TrInstructions);
 
         speaker.speak(TrInstructions);
     }
 
     public void SmInstructions(Text texti){
-        String SmInstructions = ("Feeling Lucky?\nPlay Multiplier, give some points lets see if they grow or shrink." +
-                "\nPlay Chance, pay 10 points and see if you gain much more or lose it all");
+        String SmInstructions = ("""
+                Feeling Lucky?
+                Play Multiplier, give some points lets see if they grow or shrink.
+                Play Chance, pay 10 points and see if you gain much more or lose it all""");
         texti.setText(SmInstructions);
         speaker.speak(SmInstructions);
     }
 
     // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe
     public void switchAppearance(boolean dark) {
+        Theme theme;
         if (dark) {
             theme = new NightTheme();
         } else {

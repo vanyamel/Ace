@@ -15,7 +15,7 @@ public class Dictionary {
     /**
      * set of legal words for Boggle
      */
-    private TreeSet<String> legalWords;
+    private final TreeSet<String> legalWords;
 
     /**
      * Class constructor

@@ -1,15 +1,7 @@
 package boggle;
 
-import boggle.surprise.BadBetException;
-import boggle.surprise.BetMode;
-import boggle.surprise.Bets;
-import boggle.tts.Speaker;
-
 import java.util.*;
 
-/**
- * The BoggleGame class for the first Assignment in CSC207, Fall 2022
- */
 public class BoggleGame {
 
     /**
@@ -19,14 +11,12 @@ public class BoggleGame {
     /**
      * stores game statistics
      */
-    private BoggleStats gameStats;
+    private final BoggleStats gameStats;
 
-    private Hints hint;
+    private final Hints hint;
     private boolean hintGet;
 
-    private TimeRush TR;
-
-    private Dictionary boggleDict = new Dictionary("wordlist.txt");
+    public Dictionary boggleDict = new Dictionary("C:\\Users\\ali_n\\IdeaProjects\\untitled\\Ace\\boggle\\wordlist.txt");
     private String Letters;
 
     /**
@@ -49,7 +39,7 @@ public class BoggleGame {
     public BoggleGame() {
         this.scanner = new Scanner(System.in);
         this.gameStats = new BoggleStats();
-        this.TR = new TimeRush();
+        TimeRush TR = new TimeRush();
         this.hint = new Hints(this.gameStats);
     }
 
@@ -142,90 +132,59 @@ public class BoggleGame {
         return letters.toString();
     }
 
-    /*
-     * This should be a recursive function that finds all valid words on the boggle board.
-     * Every word should be valid (i.e. in the boggleDict) and of length 4 or more.
-     * Words that are found should be entered into the allWords HashMap.  This HashMap
-     * will be consulted as we play the game.
-     *
-     * Note that this function will be a recursive function.  You may want to write
-     * a wrapper for your recursion. Note that every legal word on the Boggle grid will correspond to
-     * a list of grid positions on the board, and that the Position class can be used to represent these
-     * positions. The strategy you will likely want to use when you write your recursion is as follows:
-     * -- At every Position on the grid:
-     * ---- add the Position of that point to a list of stored positions
-     * ---- if your list of stored positions is >= 4, add the corresponding word to the allWords Map
-     * ---- recursively search for valid, adjacent grid Positions to add to your list of stored positions.
-     * ---- Note that a valid Position to add to your list will be one that is either horizontal, diagonal, or
-     *      vertically touching the current Position
-     * ---- Note also that a valid Position to add to your list will be one that, in conjunction with those
-     *      Positions that precede it, form a legal PREFIX to a word in the Dictionary (this is important!)
-     * ---- Use the "isPrefix" method in the Dictionary class to help you out here!!
-     * ---- Positions that already exist in your list of stored positions will also be invalid.
-     * ---- You'll be finished when you have checked EVERY possible list of Positions on the board, to see
-     *      if they can be used to form a valid word in the dictionary.
-     * ---- Food for thought: If there are N Positions on the grid, how many possible lists of positions
-     *      might we need to evaluate?
-     *
-     * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
-     * @param boggleDict A dictionary of legal words
-     * @param boggleGrid A boggle grid, with a letter at each position on the grid
-     */
-    private void findAllWords(Map<String, ArrayList<Position>> allWords, Dictionary boggleDict, BoggleGrid boggleGrid) {
+    private void findAllWords(Map<String,ArrayList<Position>> allWords, Dictionary boggleDict, BoggleGrid boggleGrid) {
+        int rows = boggleGrid.numRows(),
+                cols = boggleGrid.numCols();
+        boolean[][] locationsVisited = new boolean[rows][cols]; // array to check if position is valid or false
         String word = "";
-        ArrayList<Position> positionList = new ArrayList<>();
-        int r = boggleGrid.numRows();
-        int c = boggleGrid.numCols();
-        boolean[][] traversed = new boolean[r][c];
-        for (int i = 0; i < boggleGrid.numRows(); i++) {
-            for (int j = 0; j < boggleGrid.numCols(); j++) {
-                findAllWordsHelper(traversed, positionList, i, j, word, allWords, boggleDict, boggleGrid);
+        for (int row = 0; row < rows; row++) { // loop to go through every grid sqaure to check for all possibilities
+            for (int col = 0; col < cols; col++) {
+                ArrayList<Position> list = new ArrayList<Position>();
+                findWord(allWords, boggleDict, boggleGrid, locationsVisited, word, new Position(row, col), list);
+                // helper function to help find words and navigate word possibilities
             }
         }
     }
+    /*
+    This is a recursive helper function, which on each step adds the position to the Arraylist I made for position,
+    it comes useful by holding onto the position if its still a valid path, If the path becomes invalid we update our
+    boolean array making that position false, but if the position completes off a word, and the word is in our
+    legal word list (aka boggleDict) we check if we already have that word in our hashmap, if not we add it as a key,
+    and its positions as its values.
+    Then we recursively go through the grid squares above us and beside us and diagnol ones, with the same steps,
+    updating our hashmap along the way. Which becomes a hashmap with all possible words on the grid.
+     */
+    private void findWord(Map<String, ArrayList<Position>> allWords, Dictionary boggleDict, BoggleGrid boggleGrid,
+                          boolean[][] locationsVisited, String word, Position pos, ArrayList<Position> list) {
+        list.add(pos);
+        locationsVisited[pos.getRow()][pos.getCol()] = true; // makes locations true for now, will change to false if
+        // found not a prefix in later if statement
+        word = word + boggleGrid.getCharAt(pos.getRow(), pos.getCol()); // adds character from position to word
 
-    private void findAllWordsHelper(boolean[][] traversed, ArrayList<Position> positionList, int row, int col,
-                                    String word, Map<String, ArrayList<Position>> allWords, Dictionary boggleDict,
-                                    BoggleGrid boggleGrid) {
+        if (!boggleDict.isPrefix(word)) { // if word isn't a prefix or prefix anymore, it changes its position to false
+            // and removes it from the position list
+            locationsVisited[pos.getRow()][pos.getCol()] = false;
+            list.remove(pos);
+            return;
+        } else if (boggleDict.containsWord(word) && word.length() >= 4){
+            if (!allWords.containsKey(word)){// if word isn't already in the hashmap it adds it
+                allWords.put(word, new ArrayList<Position>(list));
+            }
 
-        String letter = String.valueOf(boggleGrid.getCharAt(row, col));
-        Position p = new Position();
-        traversed[row][col] = true;
-        int r = boggleGrid.numRows();
-        int c = boggleGrid.numCols();
-
-        if (boggleDict.containsWord(word) && word.length() >= 4) {
-            allWords.put(word, positionList);
         }
-        word += letter;
-        if (boggleDict.isPrefix(word)) {
-            p.setRow(row);
-            p.setCol(col);
-            positionList.add(p);
-            for (int i = row - 1; i <= row + 1 && i < r; i++) {
-                for (int j = col - 1; j <= col + 1 && j < c; j++) {
-
-                    if (i >= 0 && j >= 0 && !traversed[i][j]) {
-                        findAllWordsHelper(traversed, positionList, i, j, word, allWords, boggleDict, boggleGrid);
-                    }
-
+        // recursive step to go through each grid square
+        for (int row = pos.getRow() - 1; row < boggleGrid.numRows() && row < pos.getRow() + 2; row++){
+            for (int col = pos.getCol() - 1; col < boggleGrid.numCols() && col < pos.getCol() + 2; col++){
+                if (col > -1 && row > -1 && !locationsVisited[row][col]){
+                    findWord(allWords, boggleDict, boggleGrid, locationsVisited, word, new Position(row, col), list);
                 }
             }
         }
-        positionList.remove(p);
-        traversed[row][col] = false;
-
+        list.remove(pos); // removes positions that didn't end up making a word
+        locationsVisited[pos.getRow()][pos.getCol()] = false;
     }
 
 
-    /*
-     * Gets words from the computer.  The computer should find words that are
-     * both valid and not in the player's word list.  For each word that the computer
-     * finds, update the computer's word list and increment the
-     * computer's score (stored in boggleStats).
-     *
-     * @param allWords A mutable list of all legal words that can be found, given the boggleGrid grid letters
-     */
     private void computerMove(Map<String, ArrayList<Position>> all_words) {
         for (String word : all_words.keySet()) {
             if (!this.gameStats.getPlayerWords().contains(word)) {

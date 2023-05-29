@@ -1,14 +1,9 @@
-
-import boggle.BoggleGame;
 import boggle.tts.Speaker;
 import boggleViews.BoggleView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * The Main class for the first Assignment in CSC207, Fall 2022
- */
 public class Main extends Application {
     /**
      * Main method.
