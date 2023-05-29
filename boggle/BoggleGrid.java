@@ -8,11 +8,11 @@ public class BoggleGrid {
     /**
      * size of grid
      */
-    private int size;
+    private final int size;
     /**
      * characters assigned to grid
      */
-    private char[][] board;
+    private final char[][] board;
 
     /* BoggleGrid constructor
      * ----------------------
@@ -47,14 +47,14 @@ public class BoggleGrid {
      */
     @Override
     public String toString() {
-        String boardString = "";
+        StringBuilder boardString = new StringBuilder();
         for(int row = 0; row < this.size; row++){
             for(int col = 0; col < this.size; col++){
-                boardString += this.board[row][col] + " ";
+                boardString.append(this.board[row][col]).append(" ");
             }
-            boardString += "\n";
+            boardString.append("\n");
         }
-        return boardString;
+        return boardString.toString();
     }
 
     /*

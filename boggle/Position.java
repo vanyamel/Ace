@@ -15,15 +15,6 @@ public class Position {
 
     /**
      * A grid Position.
-     * Sets row and column to 0, by default
-     */
-    public Position() {
-        this.row = 0;
-        this.col = 0;
-    }
-
-    /**
-     * A grid Position.
      * 
      * @param row row
      * @param col column

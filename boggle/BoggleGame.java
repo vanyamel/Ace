@@ -16,7 +16,7 @@ public class BoggleGame {
     private final Hints hint;
     private boolean hintGet;
 
-    public Dictionary boggleDict = new Dictionary("C:\\Users\\ali_n\\IdeaProjects\\untitled\\Ace\\boggle\\wordlist.txt");
+    public Dictionary boggleDict = new Dictionary("Ace\\boggle\\wordlist.txt");
     private String Letters;
 
     /**
