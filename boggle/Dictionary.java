@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * The Dictionary class for the first Assignment in CSC207, Fall 2022
  * The Dictionary will contain lists of words that are acceptable for Boggle
  */
 public class Dictionary {
@@ -14,7 +15,7 @@ public class Dictionary {
     /**
      * set of legal words for Boggle
      */
-    private final TreeSet<String> legalWords;
+    private TreeSet<String> legalWords;
 
     /**
      * Class constructor

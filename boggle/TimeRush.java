@@ -1,4 +1,5 @@
 package boggle;
+import java.util.*;
 
 public class TimeRush {
     private final long startTime;

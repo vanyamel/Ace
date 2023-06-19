@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * The BoggleStats class for the first Assignment in CSC207, Fall 2022
  * The BoggleStats will contain statsitics related to game play Boggle 
  */
 public class BoggleStats {
@@ -11,11 +12,11 @@ public class BoggleStats {
     /**
      * set of words the player finds in a given round 
      */  
-    private Set<String> playerWords;
+    private Set<String> playerWords = new HashSet<String>();  
     /**
      * set of words the computer finds in a given round 
      */  
-    private Set<String> computerWords;
+    private Set<String> computerWords = new HashSet<String>();  
     /**
      * the player's score for the current round
      */  
@@ -49,10 +50,11 @@ public class BoggleStats {
      * enumarable types of players (human or computer)
      */  
     public enum Player {
-        Human(),
-        Computer();
-
-        Player() {
+        Human("Human"),
+        Computer("Computer");
+        private final String player;
+        Player(final String player) {
+            this.player = player;
         }
     }
 
@@ -63,7 +65,7 @@ public class BoggleStats {
      */
     public BoggleStats() {
         this.round = 0;
-        this.pScore = 0;
+        this.pScore = 100;
         this.cScore = 0;
         this.pScoreTotal = 0;
         this.cScoreTotal = 0;
@@ -84,7 +86,7 @@ public class BoggleStats {
         int score = 0;
         for (int i = 1; i <= word.length(); i++){
             if (i >= 4){
-                score += 10;
+                score += 1;
             }
         }
         switch (player) {
@@ -97,6 +99,9 @@ public class BoggleStats {
                 this.cScore += score;
             }
         }
+    }
+    public int getPlayerScore() {
+        return this.pScore;
     }
 
     public void setPlayerScore(int score) {
@@ -121,8 +126,40 @@ public class BoggleStats {
         this.cScore = 0;
         this.round += 1;
     }
+//
+    /* 
+     * Summarize one round of boggle.  Print out:
+     * The words each player found this round.
+     * Each number of words each player found this round.
+     * Each player's score this round.
+     */
+    public void summarizeRound() {
+        System.out.println("player found the words " + getPlayerWords() + " this round");
+        System.out.println("computer found the words " + this.computerWords + " this round");
+        System.out.println("player found " + getPlayerWords().size() + " words this round");
+        System.out.println("computer found " + this.computerWords.size() + " words this round");
+        System.out.println("player score is " + getScore() + " this round");
+        System.out.println("computer score is " + this.cScore + " this round");
+    }
 
-    /*
+    /* 
+     * Summarize the entire boggle game.  Print out:
+     * The total number of rounds played.
+     * The total score for either player.
+     * The average number of words found by each player per round.
+     */
+    public void summarizeGame() {
+        if (getRound() == 0){
+            return;
+        }
+        System.out.println(getRound() + " rounds were played");
+        System.out.println("the total score for player is " + this.pScoreTotal);
+        System.out.println("the total score for computer is " + this.cScoreTotal);
+        System.out.println("the average number of words found by player is " + this.pAverageWords);
+        System.out.println("the average number of words found by computer is " + this.cAverageWords);
+    }
+
+    /* 
      * @return Set<String> The player's word list
      */
     public Set<String> getPlayerWords() {
@@ -148,6 +185,9 @@ public class BoggleStats {
     public int getpScoreTotal() {
         return pScoreTotal;
     }
+    public void setpScoreTotal(int num) {
+        this.pScoreTotal =  num;
+    }
 
     public int getcScore() {
         return cScore;
@@ -170,5 +210,11 @@ public class BoggleStats {
     public double getAcwordcount() {
         return this.cAverageWords;
     }
+
+    public int getScoreTotal() {
+        return this.pScoreTotal;
+    }
+
+    public void setPlayerScoreTotal(float score) {this.pScoreTotal = (int) score;}
 
 }

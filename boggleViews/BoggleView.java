@@ -4,23 +4,16 @@ import boggle.BoggleGame;
 import boggle.surprise.BadBetException;
 import boggle.surprise.BetMode;
 import boggle.surprise.Bets;
-import boggle.tts.Speaker;
-import boggleViews.themes.LightTheme;
-import boggleViews.themes.NightTheme;
-import boggleViews.themes.Theme;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import boggle.tts.Speaker;
 
 import java.util.Objects;
 
@@ -28,7 +21,7 @@ import java.util.Objects;
 public class BoggleView {
     private final BoggleGame game;
 
-    private boolean nmIntiated = false;
+    private boolean nightModeEnabled = false;
     private HBox bottomText = new HBox();
     private final BorderPane borderPane = new BorderPane();
     private final GridPane gridPane = new GridPane();
@@ -40,13 +33,12 @@ public class BoggleView {
     private final TextField input = new TextField();
 
     private final Text text = new Text();
-
     private final Text textBottom = new Text();
     private String letters;
 
     //this boolean checks makes sure User cant call hints or timerush after the round ends
     private boolean roundEnded;
-    private boolean Check = false;
+    private boolean timeRushEnabled = false;
 
     private boolean first_round = true;
 
@@ -116,9 +108,9 @@ public class BoggleView {
         timeRush.setOnMouseReleased(e -> {
             if (!roundEnded) {
                 this.startTime = System.currentTimeMillis();
-                this.Check = true;
+                this.timeRushEnabled = true;
                 TrInstructions(textBottom);
-                text.setText("You Initiated Time Rush!!\nBE QUICK FOR MORE POINTS!!");
+                text.setText("You Initiated Time Rush!!\n BE QUICK FOR MORE POINTS!!");
             }
         });
 
@@ -133,19 +125,19 @@ public class BoggleView {
         });
 
         nightmode.setOnMouseReleased(e -> {
-            this.nmIntiated = !this.nmIntiated;
+            this.nightModeEnabled = !this.nightModeEnabled;
 
-            switchAppearance(nmIntiated);
+            switchAppearance(nightModeEnabled);
         });
 
 
         // creates and formats labels to Hold and display Scores and words found
-        Label scoreLabel = new Label("Player Score is: "+game.getpScore() );
+        Label scoreLabel = new Label("Player Score is: " + game.getpScore());
         scoreLabel.setFont(new Font(12));
         scoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
 
-        Label cscoreLabel = new Label("Computer Score is: " );
+        Label cscoreLabel = new Label("Computer Score is: " + game.getcScore());
         cscoreLabel.setFont(new Font(12));
         cscoreLabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
@@ -153,7 +145,7 @@ public class BoggleView {
         wordCount.setFont(new Font(12));
         wordCount.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
 
-        Label pWordlabel = new Label("Player Words Found: ");
+        Label pWordlabel = new Label("Computer Words Found: ");
         pWordlabel.setFont(new Font(12));
         pWordlabel.setAlignment(Pos.TOP_CENTER);
         pWordlabel.setStyle("-fx-background-color: #ceffc6;-fx-padding: 10px;");
@@ -238,7 +230,7 @@ public class BoggleView {
                         game.setpScore(game.getpScore() - amount);
                         int new_amount = Bets.multiplier(amount);
                         game.setpScore(game.getpScore() + new_amount);
-                        text.setText("You won or lost : " + new_amount + " points.");
+                        text.setText("You won: " + new_amount + " points.");
                     } catch (NumberFormatException | BadBetException exc) {
                         betInput.setText("");
                         text.setText("Bad input!");
@@ -250,14 +242,11 @@ public class BoggleView {
         });
 
         surpriseMechanic.setOnMouseReleased(e -> {
-            if (!roundEnded) {
-                SmInstructions(textBottom);
-                betsVisible = !betsVisible;
+            betsVisible = !betsVisible;
 
-                selectBetMode.setVisible(betsVisible);
-                betInput.setVisible(betsVisible);
-                betConfirm.setVisible(betsVisible);
-            }
+            selectBetMode.setVisible(betsVisible);
+            betInput.setVisible(betsVisible);
+            betConfirm.setVisible(betsVisible);
         });
 
         selectBetMode.setVisible(false);
@@ -282,12 +271,10 @@ public class BoggleView {
                     cWordlabel.setText("Computer Words found:" + game.getComputerWords());
                     cWordlabel.setWrapText(true);
                     // Check, checks if user intitiated timeRush, will only run on TimeRush mode
-                    if (this.Check) {
-                        int minutes = (int) ((game.getTimeInSeconds(startTime) % 3600) / 60);
-                        int seconds = (int) (game.getTimeInSeconds(startTime) % 60);
-                        this.timerush = "Time Taken: " + String.format(minutes + " minutes and " + seconds + " seconds");
-                        game.scoreMultiplier((minutes * 60) + seconds);
-                        this.Check = false;
+                    if (this.timeRushEnabled) {
+                        int[] minutes_seconds = game.runTimeRush(startTime);
+                        this.timerush = "Time Taken: " + String.format(minutes_seconds[0] + " minutes and " + minutes_seconds[1] + " seconds");
+                        this.timeRushEnabled = false;
                     }
                     this.roundEnded = true;
                     String roundEnd = ("Player found " + game.getpwordCount() + " words this round\nComputer found "
@@ -381,91 +368,73 @@ public class BoggleView {
             this.buttons[i].setMinWidth(120);
 
             Button button = buttons[i];
-            this.buttons[i].setOnAction(e -> {
-                input.setText(input.getText() + button.getText());
-            });
+            this.buttons[i].setOnAction(e -> input.setText(input.getText() + button.getText()));
         }
     }
 
     //creates grid and assigns it to placement locations
     public void createGrid(Button[] buttons) {
-        gridPane.add(buttons[0], 0, 0, 1, 1);
-        gridPane.add(buttons[1], 1, 0, 1, 1);
-        gridPane.add(buttons[2], 2, 0, 1, 1);
-        gridPane.add(buttons[3], 3, 0, 1, 1);
-        gridPane.add(buttons[4], 0, 1, 1, 1);
-        gridPane.add(buttons[5], 1, 1, 1, 1);
-        gridPane.add(buttons[6], 2, 1, 1, 1);
-        gridPane.add(buttons[7], 3, 1, 1, 1);
-        gridPane.add(buttons[8], 0, 2, 1, 1);
-        gridPane.add(buttons[9], 1, 2, 1, 1);
-        gridPane.add(buttons[10], 2, 2, 1, 1);
-        gridPane.add(buttons[11], 3, 2, 1, 1);
-        gridPane.add(buttons[12], 0, 3, 1, 1);
-        gridPane.add(buttons[13], 1, 3, 1, 1);
-        gridPane.add(buttons[14], 2, 3, 1, 1);
-        gridPane.add(buttons[15], 3, 3, 1, 1);
+        int counter = 0;
+
+        for (int i = 0; i <= 3; ++i) {
+            for (int i1 = 0; i1 <= 3; ++i1) {
+                System.err.println(counter + " " + i1 + " " + i);
+                gridPane.add(buttons[counter], i1, i, 1, 1);
+                counter++;
+            }
+        }
+
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(10, 10, 10, 10));
         borderPane.setCenter(gridPane);
     }
 
     // Introduction text
-    public void intro(Text texti) {
-        String intro = ("The Boggle board contains a grid of letters that are randomly placed." +
-                "We're both going to try to find words in this grid by joining the letters.\n" +
-                "You can form a word by connecting adjoining letters on the grid." +
-                "Two letters adjoin if they are next to each other horizontally,\n" +
-                "vertically, or diagonally. The words you find must be at least 4 letters long," +
-                "and you can't use a letter twice in any single word. Your points\n" +
-                "will be based on word length: a 4-letter word is worth 1 point, 5-letter" +
-                "words earn 2 points, and so on. After you find as many words as you can,\n" +
-                "I will find all the remaining words." +
-                "Click on the letters so select them" +
-                "Hit enter when your ready");
-        texti.setText(intro);
-        speaker.speak(intro);
+    public void intro(Text textBox) {
+        String intro = """
+                The Boggle board contains a grid of letters that are randomly placed.We're both going to try to find words in this grid by joining the letters.
+                You can form a word by connecting adjoining letters on the grid.Two letters adjoin if they are next to each other horizontally,
+                vertically, or diagonally. The words you find must be at least 4 letters long,and you can't use a letter twice in any single word. Your points
+                will be based on word length: a 4-letter word is worth 1 point, 5-letterwords earn 2 points, and so on. After you find as many words as you can,
+                I will find all the remaining words.Click on the letters so select themHit enter when your ready""";
 
+        textBox.setText(intro);
+        speaker.speak(intro);
     }
 
     //Hint instructions
     public void hintInstructions(Text texi) {
         String hintInstructions = ("Pressing the Hint button, allows you to recieve a Hint to help you find a " +
-                "word in the board\nYou can only have one hint per , So use it wisely");
+                "word in the board\n It costs 1 point though and you can only have one hint per , So use it wisely");
         texi.setText(hintInstructions);
         speaker.speak(hintInstructions);
     }
 
     //TimeRush instructions
-    public void TrInstructions(Text texti) {
-        String TrInstructions = ("""
+    public void TrInstructions(Text textBox) {
+        String TrInstructions = """
                 A timer has started, if you finish finding words in under 90 seconds you'll get triple the points
                 If you finish under 180 seconds you'll get double the points.
-                If you fail to finish under 180 seconds you'll only get base points\s
-                Enter your words quickly!""");
-        texti.setText(TrInstructions);
+                If you fail to finish under 180 seconds you'll only get base points\s""";
 
+        textBox.setText(TrInstructions);
         speaker.speak(TrInstructions);
-    }
-
-    public void SmInstructions(Text texti){
-        String SmInstructions = ("""
-                Feeling Lucky?
-                Play Multiplier, give some points lets see if they grow or shrink.
-                Play Chance, pay 10 points and see if you gain much more or lose it all""");
-        texti.setText(SmInstructions);
-        speaker.speak(SmInstructions);
     }
 
     // Nightmode, it changes font colors and borderpane and Hbox colors to make a nightmode vibe
     public void switchAppearance(boolean dark) {
-        Theme theme;
         if (dark) {
-            theme = new NightTheme();
+            this.text.setFill(Paint.valueOf("#ceffc6"));
+            this.textBottom.setFill(Paint.valueOf("#ceffc6"));
+            this.borderPane.setStyle("-fx-background-color: #000000;");
+            this.bottomText.setStyle("-fx-background-color: #5A5A5A;");
+            this.nightmode.setText("LightMode");
         } else {
-            theme = new LightTheme();
+            this.text.setFill(Color.BLACK);
+            this.textBottom.setFill(Color.BLACK);
+            this.borderPane.setStyle("-fx-background-color: #C4A484;");
+            this.bottomText.setStyle("-fx-background-color: #ADD8E6;");
+            this.nightmode.setText("NightMode");
         }
-
-        theme.apply(this.text, this.textBottom, this.borderPane, this.bottomText, this.nightmode);
     }
 }

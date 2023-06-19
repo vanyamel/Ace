@@ -4,7 +4,6 @@ public enum BetMode {
     MULTIPLIER,
     CHANCE;
 
-
     @Override
     public String toString() {
         return switch (this) {

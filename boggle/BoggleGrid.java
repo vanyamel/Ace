@@ -1,6 +1,9 @@
 package boggle;
 
+import java.lang.reflect.Array;
+
 /**
+ * The BoggleGrid class for the first Assignment in CSC207, Fall 2022
  * The BoggleGrid represents the grid on which we play Boggle
  */
 public class BoggleGrid {
@@ -47,14 +50,14 @@ public class BoggleGrid {
      */
     @Override
     public String toString() {
-        StringBuilder boardString = new StringBuilder();
+        String boardString = "";
         for(int row = 0; row < this.size; row++){
             for(int col = 0; col < this.size; col++){
-                boardString.append(this.board[row][col]).append(" ");
+                boardString += this.board[row][col] + " ";
             }
-            boardString.append("\n");
+            boardString += "\n";
         }
-        return boardString.toString();
+        return boardString;
     }
 
     /*
